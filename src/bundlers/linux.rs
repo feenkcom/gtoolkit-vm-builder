@@ -40,6 +40,15 @@ impl LinuxBundler {
 }
 
 impl Bundler for LinuxBundler {
+    fn post_compile(
+        &self,
+        bundle_options: &BundleOptions,
+        executable: &Executable,
+        _executable_options: &ExecutableOptions,
+    ) {
+        self.set_rpath(bundle_options.compiled_executable_path(executable))
+            .expect("Failed to set rpath");
+    }
     fn bundle(&self, options: &BundleOptions) {
         let bundle_location = options.bundle_location();
         let app_name = options.app_name();
@@ -92,15 +101,6 @@ impl Bundler for LinuxBundler {
                     }
                 };
             });
-    }
-    fn post_compile(
-        &self,
-        bundle_options: &BundleOptions,
-        executable: &Executable,
-        _executable_options: &ExecutableOptions,
-    ) {
-        self.set_rpath(bundle_options.compiled_executable_path(executable))
-            .expect("Failed to set rpath");
     }
 
     fn clone_bundler(&self) -> Box<dyn Bundler> {
