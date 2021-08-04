@@ -163,6 +163,9 @@ pub struct BuildOptions {
     /// Use a specific VM to run a VMMaker, must be a path to the executable. When specified, the build will not attempt to download a VM
     #[clap(long, parse(from_os_str))]
     vmmaker_vm: Option<PathBuf>,
+    /// Use a specific image to build a VMMaker from, must be a path to the .image. When specified, the build will not attempt to download an image
+    #[clap(long, parse(from_os_str))]
+    vmmaker_image: Option<PathBuf>,
 }
 
 impl BuildOptions {
@@ -183,6 +186,10 @@ impl BuildOptions {
 
     pub fn vmmaker_vm(&self) -> Option<&Path> {
         self.vmmaker_vm.as_ref().map(|dir| dir.as_path())
+    }
+
+    pub fn vmmaker_image(&self) -> Option<&Path> {
+        self.vmmaker_image.as_ref().map(|dir| dir.as_path())
     }
 
     pub fn workspace_directory(&self) -> Option<PathBuf> {

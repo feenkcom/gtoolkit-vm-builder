@@ -122,7 +122,7 @@ fn build_synchronously(build_options: BuildOptions) -> Result<()> {
         bundler.post_compile(&bundle_options, executable, &executable_options)
     });
 
-    bundler.compile_third_party_libraries(&bundle_options);
+    bundler.compile_third_party_libraries(&bundle_options)?;
     bundler.bundle(&bundle_options);
 
     Ok(())

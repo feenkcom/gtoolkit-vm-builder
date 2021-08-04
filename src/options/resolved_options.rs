@@ -131,6 +131,10 @@ impl ResolvedOptions {
         self.options.vmmaker_vm()
     }
 
+    pub fn vmmaker_image(&self) -> Option<&Path> {
+        self.options.vmmaker_image()
+    }
+
     pub fn libraries(&self) -> &Vec<Box<dyn Library>> {
         &self.libraries
     }

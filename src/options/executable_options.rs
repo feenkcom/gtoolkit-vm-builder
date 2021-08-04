@@ -40,6 +40,10 @@ impl<'bundle_options> ExecutableOptions<'bundle_options> {
         self.options.vmmaker_vm()
     }
 
+    pub fn vmmaker_image(&self) -> Option<&Path> {
+        self.options.vmmaker_image()
+    }
+
     pub fn target(&self) -> &Target {
         self.options.target()
     }
