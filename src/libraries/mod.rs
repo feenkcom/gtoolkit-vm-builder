@@ -63,9 +63,11 @@ pub fn freetype_static() -> CMakeLibrary {
     CMakeLibrary::new(
         "freetype",
         LibraryLocation::Git(
-            LibraryGitLocation::new("https://github.com/freetype/freetype.git").tag("VER-2-11-0"),
+            LibraryGitLocation::new("https://github.com/freetype/freetype.git").tag("VER-2-10-4"),
         ),
     )
+    .define("FT_REQUIRE_ZLIB", "TRUE")
+    .define("FT_REQUIRE_PNG", "TRUE")
     .compiled_name(CompiledLibraryName::Matching("freetype".to_string()))
 }
 
