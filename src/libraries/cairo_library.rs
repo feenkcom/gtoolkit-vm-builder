@@ -9,6 +9,7 @@ use std::fs::{read_to_string, OpenOptions};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use user_error::UserFacingError;
 
 #[derive(Debug, Clone)]
 pub struct CairoLibrary {
@@ -17,6 +18,7 @@ pub struct CairoLibrary {
     pixman: PixmanLibrary,
     zlib: CMakeLibrary,
     png: CMakeLibrary,
+    freetype: CMakeLibrary,
 }
 
 impl CairoLibrary {
@@ -34,6 +36,7 @@ impl CairoLibrary {
             pixman: pixman(),
             zlib: zlib_static(),
             png: png_static(),
+            freetype: freetype_static(),
         }
     }
 
@@ -145,80 +148,125 @@ impl CairoLibrary {
         Ok(())
     }
 
-    fn patch_windows_common_makefile(&self, options: &BundleOptions) -> Result<(), Box<dyn Error>> {
-        let makefile_directory = self.source_directory(options).join("build");
+    fn patch_file_with(
+        &self,
+        path: impl AsRef<Path>,
+        patcher: impl FnOnce(String) -> String,
+    ) -> Result<(), Box<dyn Error>> {
+        let path = path.as_ref().to_path_buf();
+        let file_name = path
+            .file_name()
+            .ok_or(UserFacingError::new("Could not get file name"))?
+            .to_os_string();
 
-        if makefile_directory
-            .join("Makefile.win32.common.fixed")
-            .exists()
-        {
-            return Ok(());
+        let mut fixed_file_name = file_name.clone();
+        fixed_file_name.push(".fixed");
+        let mut backup_file_name = file_name.clone();
+        backup_file_name.push(".bak");
+
+        let parent_directory = path
+            .parent()
+            .ok_or(UserFacingError::new("Could not get parent folder"))?;
+
+        let actual_file = path.clone();
+        let fixed_file = parent_directory.join(&fixed_file_name);
+        let backup_file = parent_directory.join(&backup_file_name);
+
+        if fixed_file.exists() {
+            std::fs::remove_file(&fixed_file)?;
+            std::fs::copy(&backup_file, &actual_file)?;
+        } else {
+            std::fs::copy(&actual_file, &backup_file)?;
         }
 
-        let makefile = makefile_directory.join("Makefile.win32.common");
-
-        std::fs::copy(
-            &makefile,
-            makefile_directory.join("Makefile.win32.common.bak"),
-        )?;
-
-        let mut contents = read_to_string(&makefile)?;
-        contents = contents.replace("-MD", "-MT");
-        contents = contents.replace(
-            "CAIRO_LIBS += $(ZLIB_PATH)/zdll.lib",
-            "CAIRO_LIBS += $(ZLIB_PATH)/lib/zlibstatic.lib",
-        );
-        contents = contents.replace(
-            "ZLIB_CFLAGS += -I$(ZLIB_PATH)",
-            "ZLIB_CFLAGS += -I$(ZLIB_PATH)/include",
-        );
-        contents = contents.replace(
-            "CAIRO_LIBS +=  $(LIBPNG_PATH)/libpng.lib",
-            "CAIRO_LIBS +=  $(LIBPNG_PATH)/lib/libpng16_static.lib",
-        );
-        contents = contents.replace(
-            "LIBPNG_CFLAGS += -I$(LIBPNG_PATH)/",
-            "LIBPNG_CFLAGS += -I$(LIBPNG_PATH)/include",
-        );
-
-        contents = contents.replace("@mkdir", "@coreutils mkdir");
-        contents = contents.replace("`dirname $<`", "\"$(shell coreutils dirname $<)\"");
-
-        let include_flags_to_replace = "DEFAULT_CFLAGS += -I. -I$(top_srcdir) -I$(top_srcdir)/src";
-        let new_include_flags = self
-            .msvc_include_directories()
-            .into_iter()
-            .map(|path| format!("DEFAULT_CFLAGS += -I\"{}\"", path.display()))
-            .collect::<Vec<String>>()
-            .join("\n");
-
-        contents = contents.replace(
-            include_flags_to_replace,
-            &format!("{}\n{}", include_flags_to_replace, new_include_flags),
-        );
-
-        let ld_flags_to_replace = "DEFAULT_LDFLAGS = -nologo $(CFG_LDFLAGS)";
-        let new_ld_flags = self
-            .msvc_lib_directories()
-            .into_iter()
-            .map(|path| format!("DEFAULT_LDFLAGS += -LIBPATH:\"{}\"", path.display()))
-            .collect::<Vec<String>>()
-            .join("\n");
-
-        contents = contents.replace(
-            ld_flags_to_replace,
-            &format!("{}\n{}", ld_flags_to_replace, new_ld_flags),
-        );
+        let mut contents = read_to_string(&actual_file)?;
+        contents = patcher(contents);
 
         let mut file = OpenOptions::new()
             .write(true)
             .truncate(true)
-            .open(&makefile)?;
+            .open(&actual_file)?;
         file.write(contents.as_bytes())?;
 
-        std::fs::copy(
-            &makefile,
-            makefile_directory.join("Makefile.win32.common.fixed"),
+        std::fs::copy(&actual_file, &fixed_file)?;
+
+        Ok(())
+    }
+
+    fn patch_windows_common_makefile(&self, options: &BundleOptions) -> Result<(), Box<dyn Error>> {
+        self.patch_file_with(
+            self.source_directory(options)
+                .join("build")
+                .join("Makefile.win32.common"),
+            |contents| {
+                let mut contents = contents.replace("-MD", "-MT");
+                contents = contents.replace(
+                    "CAIRO_LIBS += $(ZLIB_PATH)/zdll.lib",
+                    "CAIRO_LIBS += $(ZLIB_PATH)/lib/zlibstatic.lib",
+                );
+
+                contents = contents.replace(
+                    "ZLIB_CFLAGS += -I$(ZLIB_PATH)",
+                    "ZLIB_CFLAGS += -I$(ZLIB_PATH)/include",
+                );
+                contents = contents.replace(
+                    "CAIRO_LIBS +=  $(LIBPNG_PATH)/libpng.lib",
+                    "CAIRO_LIBS +=  $(LIBPNG_PATH)/lib/libpng16_static.lib",
+                );
+                contents = contents.replace(
+                    "LIBPNG_CFLAGS += -I$(LIBPNG_PATH)/",
+                    "LIBPNG_CFLAGS += -I$(LIBPNG_PATH)/include",
+                );
+
+                contents = contents.replace("@mkdir", "@coreutils mkdir");
+                contents = contents.replace("`dirname $<`", "\"$(shell coreutils dirname $<)\"");
+
+                let include_flags_to_replace =
+                    "DEFAULT_CFLAGS += -I. -I$(top_srcdir) -I$(top_srcdir)/src";
+
+                let mut paths_to_include = self.msvc_include_directories();
+                paths_to_include.push(
+                    self.freetype
+                        .native_library_prefix(options)
+                        .join("include")
+                        .join("freetype2"),
+                );
+
+                let new_include_flags = paths_to_include
+                    .into_iter()
+                    .map(|path| format!("DEFAULT_CFLAGS += -I\"{}\"", path.display()))
+                    .collect::<Vec<String>>()
+                    .join("\n");
+
+                contents = contents.replace(
+                    include_flags_to_replace,
+                    &format!("{}\n{}", include_flags_to_replace, new_include_flags),
+                );
+
+                let ld_flags_to_replace = "DEFAULT_LDFLAGS = -nologo $(CFG_LDFLAGS)";
+
+                let mut paths_to_link = self.msvc_lib_directories();
+
+                paths_to_link.push(self.freetype.native_library_prefix(options).join("lib"));
+
+                let new_ld_flags = paths_to_link
+                    .into_iter()
+                    .map(|path| format!("DEFAULT_LDFLAGS += -LIBPATH:\"{}\"", path.display()))
+                    .collect::<Vec<String>>()
+                    .join("\n");
+
+                contents = contents.replace(
+                    ld_flags_to_replace,
+                    &format!("{}\n{}", ld_flags_to_replace, new_ld_flags),
+                );
+
+                contents = contents.replace(
+                    "CAIRO_LIBS =  gdi32.lib msimg32.lib user32.lib",
+                    "CAIRO_LIBS =  gdi32.lib msimg32.lib user32.lib freetype.lib",
+                );
+
+                contents
+            },
         )?;
 
         Ok(())
@@ -228,63 +276,33 @@ impl CairoLibrary {
         &self,
         options: &BundleOptions,
     ) -> Result<(), Box<dyn Error>> {
-        let makefile_directory = self.source_directory(options).join("build");
-
-        if makefile_directory
-            .join("Makefile.win32.features-h.fixed")
-            .exists()
-        {
-            return Ok(());
-        }
-
-        let makefile = makefile_directory.join("Makefile.win32.features-h");
-
-        std::fs::copy(
-            &makefile,
-            makefile_directory.join("Makefile.win32.features-h.bak"),
+        self.patch_file_with(
+            self.source_directory(options)
+                .join("build")
+                .join("Makefile.win32.features-h"),
+            |contents| contents.replace("@echo", "@coreutils echo"),
         )?;
-
-        let mut contents = read_to_string(&makefile)?;
-        contents = contents.replace("@echo", "@coreutils echo");
-
-        let mut file = OpenOptions::new()
-            .write(true)
-            .truncate(true)
-            .open(&makefile)?;
-        file.write(contents.as_bytes())?;
-
-        std::fs::copy(
-            &makefile,
-            makefile_directory.join("Makefile.win32.features-h.fixed"),
+        self.patch_file_with(
+            self.source_directory(options)
+                .join("build")
+                .join("Makefile.win32.features"),
+            |contents| contents.replace("CAIRO_HAS_FT_FONT=0", "CAIRO_HAS_FT_FONT=1"),
         )?;
-
         Ok(())
     }
 
     fn patch_windows_makefile(&self, options: &BundleOptions) -> Result<(), Box<dyn Error>> {
-        let makefile_directory = self.source_directory(options).join("src");
-
-        if makefile_directory.join("Makefile.win32.fixed").exists() {
-            return Ok(());
-        }
-
-        let makefile = makefile_directory.join("Makefile.win32");
-
-        std::fs::copy(&makefile, makefile_directory.join("Makefile.win32.bak"))?;
-
-        let mut contents = read_to_string(&makefile)?;
-        contents = contents.replace(
-            "@for x in $(enabled_cairo_headers); do echo \"	src/$$x\"; done",
-            "",
-        );
-
-        let mut file = OpenOptions::new()
-            .write(true)
-            .truncate(true)
-            .open(&makefile)?;
-        file.write(contents.as_bytes())?;
-
-        std::fs::copy(&makefile, makefile_directory.join("Makefile.win32.fixed"))?;
+        self.patch_file_with(
+            self.source_directory(options)
+                .join("src")
+                .join("Makefile.win32"),
+            |contents| {
+                contents.replace(
+                    "@for x in $(enabled_cairo_headers); do echo \"	src/$$x\"; done",
+                    "",
+                )
+            },
+        )?;
 
         Ok(())
     }
