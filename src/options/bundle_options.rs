@@ -1,5 +1,6 @@
-use crate::{Library, ResolvedOptions, Target};
+use crate::{ResolvedOptions, Target};
 use feenk_releaser::Version;
+use shared_library_builder::Library;
 use std::path::{Path, PathBuf};
 
 #[derive(Debug, Clone, Copy)]

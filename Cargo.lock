@@ -507,6 +507,7 @@ dependencies = [
  "rustc_version",
  "serde",
  "serde_derive",
+ "shared-library-builder",
  "tar",
  "url",
  "user-error",
@@ -1331,6 +1332,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "shared-library-builder"
+version = "0.1.0"
+source = "git+https://github.com/feenkcom/shared-library-builder-rs?rev=3729a3c776844a091a67ee27d46582d2796466ba#3729a3c776844a091a67ee27d46582d2796466ba"
+dependencies = [
+ "cmake",
+ "downloader",
+ "file-matcher",
+ "flate2",
+ "fs_extra",
+ "pkg-config",
+ "rustc_version",
+ "tar",
+ "to_absolute",
+ "url",
+ "user-error",
+ "which",
+ "xz2",
+]
+
+[[package]]
 name = "signal-hook-registry"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1488,6 +1509,12 @@ name = "tinyvec_macros"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
+
+[[package]]
+name = "to_absolute"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e18f67ceea13aa06bf1aff5496d395b2d5b3caa118a51b4122e78c04bc571b2"
 
 [[package]]
 name = "tokio"

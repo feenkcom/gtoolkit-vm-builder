@@ -1,8 +1,9 @@
-use crate::{
-    boxer, cairo, clipboard, freetype, git, gleam, glutin, pixman, sdl2, skia, winit, Library,
-};
 use clap::{AppSettings, ArgEnum, Clap};
 use rustc_version::version_meta;
+use shared_library_builder::{
+    boxer, clipboard, git, gleam, glutin, sdl2, skia, winit, CairoLibrary, FreetypeLibrary,
+    Library, PixmanLibrary,
+};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::str::FromStr;
@@ -106,9 +107,9 @@ impl ThirdPartyLibrary {
             ThirdPartyLibrary::Clipboard => clipboard().into(),
             ThirdPartyLibrary::Git => git().into(),
             ThirdPartyLibrary::Sdl2 => sdl2().into(),
-            ThirdPartyLibrary::Freetype => freetype().into(),
-            ThirdPartyLibrary::Cairo => cairo().into(),
-            ThirdPartyLibrary::Pixman => pixman().into(),
+            ThirdPartyLibrary::Freetype => FreetypeLibrary::default().into(),
+            ThirdPartyLibrary::Cairo => CairoLibrary::default().into(),
+            ThirdPartyLibrary::Pixman => PixmanLibrary::default().into(),
         }
     }
 }
@@ -123,9 +124,6 @@ pub struct BuildOptions {
     /// To bundle a release build
     #[clap(long)]
     release: bool,
-    /// Split build load over multiple threads
-    #[clap(long)]
-    multi_threaded: bool,
     #[clap(long, possible_values = Target::VARIANTS, case_insensitive = true)]
     /// To cross-compile and bundle an application for another OS
     target: Option<Target>,
@@ -231,10 +229,6 @@ impl BuildOptions {
 
     pub fn release(&self) -> bool {
         self.release
-    }
-
-    pub fn multi_threaded(&self) -> bool {
-        self.multi_threaded
     }
 
     pub fn icons(&self) -> Option<&Vec<String>> {

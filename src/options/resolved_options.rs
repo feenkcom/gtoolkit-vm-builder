@@ -1,5 +1,6 @@
-use crate::{BuildOptions, Library, Target};
+use crate::{BuildOptions, Target};
 use feenk_releaser::{Version, VersionBump};
+use shared_library_builder::Library;
 use std::path::{Path, PathBuf};
 
 const DEFAULT_BUILD_DIR: &str = "target";

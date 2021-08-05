@@ -5,9 +5,9 @@ pub mod linux;
 pub mod mac;
 pub mod windows;
 
-pub use crate::libraries::Library;
 use crate::{Error, Result};
 use crate::{Executable, ExecutableOptions};
+use shared_library_builder::{Library, LibraryCompilationContext};
 use std::fmt::Debug;
 use std::process::Command;
 
@@ -64,10 +64,12 @@ pub trait Bundler: Debug + Send + Sync {
     fn bundle(&self, options: &BundleOptions);
 
     fn ensure_third_party_requirements(&self, options: &BundleOptions) {
+        let context =
+            LibraryCompilationContext::new_release(options.third_party_libraries_directory());
         options
             .libraries()
             .iter()
-            .for_each(|library| library.ensure_requirements(options));
+            .for_each(|library| library.ensure_requirements(&context));
     }
 
     fn compile_third_party_libraries(&self, options: &BundleOptions) -> Result<()> {
@@ -96,19 +98,18 @@ pub trait Bundler: Debug + Send + Sync {
     }
 
     fn compile_library(&self, library: &Box<dyn Library>, options: &BundleOptions) -> Result<()> {
-        library.ensure_sources(&options).map_err(|error| {
-            Error::new(format!("Could not validate sources of {}", library.name())).from(error)
-        })?;
-        library.compile(&options);
+        let context =
+            LibraryCompilationContext::new_release(options.third_party_libraries_directory());
+        library.compile(&context)?;
 
         let library_path = self
             .compiled_libraries_directory(options)
             .join(library.compiled_library_name().file_name(library.name()));
 
-        std::fs::copy(library.compiled_library(&options), &library_path).map_err(|error| {
+        std::fs::copy(library.compiled_library(&context), &library_path).map_err(|error| {
             Error::new(format!(
                 "Could not copy {} to {}",
-                library.compiled_library(&options).display(),
+                library.compiled_library(&context).display(),
                 &library_path.display(),
             ))
             .from(error)
