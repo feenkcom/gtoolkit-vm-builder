@@ -50,15 +50,15 @@ fn build_synchronously(build_options: BuildOptions) -> Result<()> {
     bundler.ensure_third_party_requirements(&bundle_options);
     bundler.ensure_compiled_libraries_directory(&bundle_options)?;
 
-    // bundle_options.executables().iter().for_each(|executable| {
-    //     let executable_options = ExecutableOptions::new(&bundle_options, executable.clone());
-    //     bundler.pre_compile(&executable_options);
-    //     bundler.compile_binary(&executable_options);
-    //     bundler.post_compile(&bundle_options, executable, &executable_options)
-    // });
+    bundle_options.executables().iter().for_each(|executable| {
+        let executable_options = ExecutableOptions::new(&bundle_options, executable.clone());
+        bundler.pre_compile(&executable_options);
+        bundler.compile_binary(&executable_options);
+        bundler.post_compile(&bundle_options, executable, &executable_options)
+    });
 
     bundler.compile_third_party_libraries(&bundle_options)?;
-    //bundler.bundle(&bundle_options);
+    bundler.bundle(&bundle_options);
 
     Ok(())
 }
