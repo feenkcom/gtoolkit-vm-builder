@@ -1334,7 +1334,7 @@ dependencies = [
 [[package]]
 name = "shared-library-builder"
 version = "0.1.0"
-source = "git+https://github.com/feenkcom/shared-library-builder-rs?rev=ab217e3efc1ebf4c9a88a25960b51555bd8c5e1b#ab217e3efc1ebf4c9a88a25960b51555bd8c5e1b"
+source = "git+https://github.com/feenkcom/shared-library-builder-rs?rev=ef8155448144094168512282eb45230316d64d96#ef8155448144094168512282eb45230316d64d96"
 dependencies = [
  "cmake",
  "downloader",

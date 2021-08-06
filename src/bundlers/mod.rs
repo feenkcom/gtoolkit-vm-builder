@@ -7,7 +7,7 @@ pub mod windows;
 
 use crate::{Error, Result};
 use crate::{Executable, ExecutableOptions};
-use shared_library_builder::{Library, LibraryCompilationContext};
+use shared_library_builder::{Library, LibraryCompilationContext, LibraryTarget};
 use std::fmt::Debug;
 use std::process::Command;
 
@@ -64,8 +64,7 @@ pub trait Bundler: Debug + Send + Sync {
     fn bundle(&self, options: &BundleOptions);
 
     fn ensure_third_party_requirements(&self, options: &BundleOptions) {
-        let context =
-            LibraryCompilationContext::new_release(options.third_party_libraries_directory());
+        let context = self.new_library_compilation_context(options);
         options
             .libraries()
             .iter()
@@ -97,9 +96,31 @@ pub trait Bundler: Debug + Send + Sync {
         Ok(())
     }
 
+    fn new_library_compilation_context(
+        &self,
+        options: &BundleOptions,
+    ) -> LibraryCompilationContext {
+        let sources_directory = options.third_party_libraries_sources_directory();
+        if !sources_directory.exists() {
+            std::fs::create_dir_all(&sources_directory)
+                .unwrap_or_else(|_| panic!("Failed to create {}", &sources_directory.display()));
+        }
+        let build_directory = options.third_party_libraries_build_directory();
+        if !build_directory.exists() {
+            std::fs::create_dir_all(&build_directory)
+                .unwrap_or_else(|_| panic!("Failed to create {}", &build_directory.display()));
+        }
+
+        LibraryCompilationContext::new(
+            sources_directory,
+            build_directory,
+            LibraryTarget::for_current_platform(),
+            !options.release(),
+        )
+    }
+
     fn compile_library(&self, library: &Box<dyn Library>, options: &BundleOptions) -> Result<()> {
-        let context =
-            LibraryCompilationContext::new_release(options.third_party_libraries_directory());
+        let context = self.new_library_compilation_context(options);
         library.compile(&context)?;
 
         let library_path = self

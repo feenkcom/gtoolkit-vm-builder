@@ -146,10 +146,14 @@ impl BundleOptions {
         self.compilation_location().join("bundle")
     }
 
-    pub fn third_party_libraries_directory(&self) -> PathBuf {
+    pub fn third_party_libraries_sources_directory(&self) -> PathBuf {
         self.options
             .workspace_directory()
             .unwrap_or(std::env::current_dir().unwrap())
-            .join("third_party")
+            .join("libs")
+    }
+
+    pub fn third_party_libraries_build_directory(&self) -> PathBuf {
+        self.options.target_dir().to_path_buf()
     }
 }
