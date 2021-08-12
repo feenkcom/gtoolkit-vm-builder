@@ -27,4 +27,4 @@ downloader = "0.2.6"
 file-matcher = "0.6.0"
 pkg-config = "0.3"
 crossbeam = "0.8"
-shared-library-builder = { git = "https://github.com/feenkcom/shared-library-builder-rs", rev = "ef8155448144094168512282eb45230316d64d96" }
+shared-library-builder = { git = "https://github.com/feenkcom/shared-library-builder-rs", rev = "2c10804054c9c247f17b961c1dbb94b30aebe4c9" }
