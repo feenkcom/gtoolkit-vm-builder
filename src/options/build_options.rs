@@ -1,9 +1,6 @@
 use clap::{AppSettings, ArgEnum, Clap};
 use rustc_version::version_meta;
-use shared_library_builder::{
-    boxer, clipboard, git, gleam, glutin, sdl2, skia, winit, CairoLibrary, FreetypeLibrary,
-    Library, PixmanLibrary,
-};
+use shared_library_builder::{boxer, clipboard, git, gleam, glutin, sdl2, skia, winit, CairoLibrary, FreetypeLibrary, Library, PixmanLibrary, crypto, ssl};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::str::FromStr;
@@ -60,6 +57,10 @@ impl ToString for Target {
 pub enum ThirdPartyLibrary {
     #[clap(name = "git")]
     Git,
+    #[clap(name = "crypto")]
+    Crypto,
+    #[clap(name = "ssl")]
+    Ssl,
     #[clap(name = "sdl2")]
     Sdl2,
     #[clap(name = "boxer")]
@@ -106,6 +107,8 @@ impl ThirdPartyLibrary {
             ThirdPartyLibrary::Winit => winit().into(),
             ThirdPartyLibrary::Clipboard => clipboard().into(),
             ThirdPartyLibrary::Git => git().into(),
+            ThirdPartyLibrary::Crypto => crypto().into(),
+            ThirdPartyLibrary::Ssl => ssl().into(),
             ThirdPartyLibrary::Sdl2 => sdl2().into(),
             ThirdPartyLibrary::Freetype => FreetypeLibrary::default().into(),
             ThirdPartyLibrary::Cairo => CairoLibrary::default().into(),
