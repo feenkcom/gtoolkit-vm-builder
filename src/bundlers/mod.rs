@@ -64,11 +64,10 @@ pub trait Bundler: Debug + Send + Sync {
     fn bundle(&self, options: &BundleOptions);
 
     fn ensure_third_party_requirements(&self, options: &BundleOptions) {
-        let context = self.new_library_compilation_context(options);
-        options
-            .libraries()
-            .iter()
-            .for_each(|library| library.ensure_requirements(&context));
+        options.libraries().iter().for_each(|library| {
+            let context = self.new_library_compilation_context(library, options);
+            library.ensure_requirements(&context)
+        });
     }
 
     fn compile_third_party_libraries(&self, options: &BundleOptions) -> Result<()> {
@@ -98,14 +97,19 @@ pub trait Bundler: Debug + Send + Sync {
 
     fn new_library_compilation_context(
         &self,
+        library: &Box<dyn Library>,
         options: &BundleOptions,
     ) -> LibraryCompilationContext {
-        let sources_directory = options.third_party_libraries_sources_directory();
+        let sources_directory = options
+            .third_party_libraries_sources_directory()
+            .join(library.name());
         if !sources_directory.exists() {
             std::fs::create_dir_all(&sources_directory)
                 .unwrap_or_else(|_| panic!("Failed to create {}", &sources_directory.display()));
         }
-        let build_directory = options.third_party_libraries_build_directory();
+        let build_directory = options
+            .third_party_libraries_build_directory()
+            .join(library.name());
         if !build_directory.exists() {
             std::fs::create_dir_all(&build_directory)
                 .unwrap_or_else(|_| panic!("Failed to create {}", &build_directory.display()));
@@ -120,7 +124,7 @@ pub trait Bundler: Debug + Send + Sync {
     }
 
     fn compile_library(&self, library: &Box<dyn Library>, options: &BundleOptions) -> Result<()> {
-        let context = self.new_library_compilation_context(options);
+        let context = self.new_library_compilation_context(library, options);
         library.compile(&context)?;
 
         let library_path = self

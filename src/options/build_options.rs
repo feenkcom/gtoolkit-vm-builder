@@ -1,6 +1,9 @@
 use clap::{AppSettings, ArgEnum, Clap};
 use rustc_version::version_meta;
-use shared_library_builder::{boxer, clipboard, git, gleam, glutin, sdl2, skia, winit, CairoLibrary, FreetypeLibrary, Library, PixmanLibrary, crypto, ssl};
+use shared_library_builder::{
+    boxer, clipboard, crypto, git, gleam, glutin, sdl2, skia, ssl, winit, CairoLibrary,
+    FreetypeLibrary, Library, PixmanLibrary,
+};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::str::FromStr;
