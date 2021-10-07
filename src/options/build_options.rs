@@ -2,7 +2,7 @@ use clap::{AppSettings, ArgEnum, Clap};
 use rustc_version::version_meta;
 use shared_library_builder::{
     boxer, clipboard, crypto, git, gleam, glutin, sdl2, skia, ssl, winit, CairoLibrary,
-    FreetypeLibrary, Library, PixmanLibrary,
+    FreetypeLibrary, Library, LibraryGitLocation, LibraryLocation, PixmanLibrary, RustLibrary,
 };
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
@@ -84,6 +84,8 @@ pub enum ThirdPartyLibrary {
     Winit,
     #[clap(name = "clipboard")]
     Clipboard,
+    #[clap(name = "process")]
+    Process,
 }
 
 impl FromStr for ThirdPartyLibrary {
@@ -113,6 +115,13 @@ impl ThirdPartyLibrary {
             ThirdPartyLibrary::Crypto => crypto().into(),
             ThirdPartyLibrary::Ssl => ssl().into(),
             ThirdPartyLibrary::Sdl2 => sdl2().into(),
+            ThirdPartyLibrary::Process => RustLibrary::new(
+                "Process",
+                LibraryLocation::Git(LibraryGitLocation::new(
+                    "https://github.com/feenkcom/libprocess.git",
+                )),
+            )
+            .into(),
             ThirdPartyLibrary::Freetype => FreetypeLibrary::default().into(),
             ThirdPartyLibrary::Cairo => CairoLibrary::default().into(),
             ThirdPartyLibrary::Pixman => PixmanLibrary::default().into(),
