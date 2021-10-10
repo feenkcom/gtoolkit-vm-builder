@@ -27,4 +27,7 @@ downloader = "0.2.6"
 file-matcher = "0.6.0"
 pkg-config = "0.3"
 crossbeam = "0.8"
-shared-library-builder = { git = "https://github.com/feenkcom/shared-library-builder-rs", rev = "a0c1101539d8a926ea8e6879a4fa889970af8a8d" }
+shared-library-builder = { git = "https://github.com/feenkcom/shared-library-builder-rs", features = [ "cmake-library", "git-location", "tar-location", "zip-location" ] }
+libprocess-library = { git = "https://github.com/feenkcom/libprocess.git" }
+libglutin-library = { git = "https://github.com/feenkcom/libglutin.git" }
+libgleam-library = { git = "https://github.com/feenkcom/libgleam.git" }

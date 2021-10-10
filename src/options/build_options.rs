@@ -1,9 +1,13 @@
-use clap::{AppSettings, ArgEnum, Clap};
-use rustc_version::version_meta;
-use shared_library_builder::{
-    boxer, clipboard, crypto, git, gleam, glutin, sdl2, skia, ssl, winit, CairoLibrary,
-    FreetypeLibrary, Library, LibraryGitLocation, LibraryLocation, PixmanLibrary, RustLibrary,
+use crate::libraries::{
+    boxer, clipboard, crypto, git, sdl2, skia, ssl, winit, CairoLibrary, FreetypeLibrary,
+    PixmanLibrary,
 };
+use clap::{AppSettings, ArgEnum, Clap};
+use libgleam_library::libgleam;
+use libglutin_library::libglutin;
+use libprocess_library::libprocess;
+use rustc_version::version_meta;
+use shared_library_builder::Library;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::str::FromStr;
@@ -107,21 +111,15 @@ impl ThirdPartyLibrary {
         match self {
             ThirdPartyLibrary::Boxer => boxer().into(),
             ThirdPartyLibrary::Skia => skia().into(),
-            ThirdPartyLibrary::Glutin => glutin().into(),
-            ThirdPartyLibrary::Gleam => gleam().into(),
+            ThirdPartyLibrary::Glutin => libglutin("v0.3.0").into(),
+            ThirdPartyLibrary::Gleam => libgleam("v0.2.0").into(),
             ThirdPartyLibrary::Winit => winit().into(),
             ThirdPartyLibrary::Clipboard => clipboard().into(),
             ThirdPartyLibrary::Git => git().into(),
             ThirdPartyLibrary::Crypto => crypto().into(),
             ThirdPartyLibrary::Ssl => ssl().into(),
             ThirdPartyLibrary::Sdl2 => sdl2().into(),
-            ThirdPartyLibrary::Process => RustLibrary::new(
-                "Process",
-                LibraryLocation::Git(LibraryGitLocation::new(
-                    "https://github.com/feenkcom/libprocess.git",
-                )),
-            )
-            .into(),
+            ThirdPartyLibrary::Process => libprocess("v0.10.0").into(),
             ThirdPartyLibrary::Freetype => FreetypeLibrary::default().into(),
             ThirdPartyLibrary::Cairo => CairoLibrary::default().into(),
             ThirdPartyLibrary::Pixman => PixmanLibrary::default().into(),

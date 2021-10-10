@@ -19,6 +19,7 @@ extern crate xz2;
 
 mod bundlers;
 mod error;
+mod libraries;
 mod options;
 
 pub use error::*;
