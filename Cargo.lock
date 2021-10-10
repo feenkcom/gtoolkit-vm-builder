@@ -533,6 +533,8 @@ dependencies = [
  "libgleam-library",
  "libglutin-library",
  "libprocess-library",
+ "libsdl2-library",
+ "libskia-library",
  "mustache",
  "pkg-config",
  "rustc_version",
@@ -766,6 +768,22 @@ dependencies = [
 name = "libprocess-library"
 version = "0.1.0"
 source = "git+https://github.com/feenkcom/libprocess.git#be44ba380b703436a5e57311239071cbf8bc5c4a"
+dependencies = [
+ "shared-library-builder",
+]
+
+[[package]]
+name = "libsdl2-library"
+version = "0.1.0"
+source = "git+https://github.com/feenkcom/libsdl2.git#060259591d1657a88421f84c811dd49357d279e7"
+dependencies = [
+ "shared-library-builder",
+]
+
+[[package]]
+name = "libskia-library"
+version = "0.1.0"
+source = "git+https://github.com/feenkcom/libskia.git#cf1c36380a1848ae17fbba1c60c69494273f4e44"
 dependencies = [
  "shared-library-builder",
 ]
@@ -1389,7 +1407,7 @@ dependencies = [
 [[package]]
 name = "shared-library-builder"
 version = "0.2.0"
-source = "git+https://github.com/feenkcom/shared-library-builder-rs#e2775ca41cbf39790a40b6eb9f6326047f160b2d"
+source = "git+https://github.com/feenkcom/shared-library-builder-rs#5b1ec0e8e2f6e1925804fbc7f5a3c83268a975ba"
 dependencies = [
  "cmake",
  "downloader",

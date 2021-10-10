@@ -48,27 +48,11 @@ pub fn git() -> CMakeLibrary {
     .depends(Box::new(libssh2))
 }
 
-pub fn sdl2() -> CMakeLibrary {
-    CMakeLibrary::new(
-        "SDL2",
-        LibraryLocation::Git(GitLocation::github("libsdl-org", "SDL").tag("release-2.0.14")),
-    )
-    .compiled_name(CompiledLibraryName::Matching("SDL2".to_string()))
-}
-
 pub fn boxer() -> RustLibrary {
     RustLibrary::new(
         "Boxer",
         LibraryLocation::Git(GitLocation::github("feenkcom", "gtoolkit-boxer")),
     )
-}
-
-pub fn skia() -> RustLibrary {
-    RustLibrary::new(
-        "Skia",
-        LibraryLocation::Git(GitLocation::github("feenkcom", "libskia")),
-    )
-    .requires("python")
 }
 
 pub fn winit() -> RustLibrary {

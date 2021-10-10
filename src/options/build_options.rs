@@ -1,5 +1,5 @@
 use crate::libraries::{
-    boxer, clipboard, crypto, git, sdl2, skia, ssl, winit, CairoLibrary, FreetypeLibrary,
+    boxer, clipboard, crypto, git, ssl, winit, CairoLibrary, FreetypeLibrary,
     PixmanLibrary,
 };
 use clap::{AppSettings, ArgEnum, Clap};
@@ -11,6 +11,8 @@ use shared_library_builder::Library;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::str::FromStr;
+use libsdl2_library::libsdl2;
+use libskia_library::libskia;
 
 #[derive(ArgEnum, Copy, Clone, Debug)]
 #[repr(u32)]
@@ -110,7 +112,7 @@ impl ThirdPartyLibrary {
     pub fn as_library(&self) -> Box<dyn Library> {
         match self {
             ThirdPartyLibrary::Boxer => boxer().into(),
-            ThirdPartyLibrary::Skia => skia().into(),
+            ThirdPartyLibrary::Skia => libskia("v0.1.0").into(),
             ThirdPartyLibrary::Glutin => libglutin("v0.3.0").into(),
             ThirdPartyLibrary::Gleam => libgleam("v0.2.0").into(),
             ThirdPartyLibrary::Winit => winit().into(),
@@ -118,7 +120,7 @@ impl ThirdPartyLibrary {
             ThirdPartyLibrary::Git => git().into(),
             ThirdPartyLibrary::Crypto => crypto().into(),
             ThirdPartyLibrary::Ssl => ssl().into(),
-            ThirdPartyLibrary::Sdl2 => sdl2().into(),
+            ThirdPartyLibrary::Sdl2 => libsdl2(Some("v0.1.0")).into(),
             ThirdPartyLibrary::Process => libprocess("v0.10.0").into(),
             ThirdPartyLibrary::Freetype => FreetypeLibrary::default().into(),
             ThirdPartyLibrary::Cairo => CairoLibrary::default().into(),

@@ -31,3 +31,5 @@ shared-library-builder = { git = "https://github.com/feenkcom/shared-library-bui
 libprocess-library = { git = "https://github.com/feenkcom/libprocess.git" }
 libglutin-library = { git = "https://github.com/feenkcom/libglutin.git" }
 libgleam-library = { git = "https://github.com/feenkcom/libgleam.git" }
+libskia-library = { git = "https://github.com/feenkcom/libskia.git" }
+libsdl2-library = { git = "https://github.com/feenkcom/libsdl2.git" }
