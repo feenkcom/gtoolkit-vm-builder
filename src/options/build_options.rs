@@ -1,18 +1,19 @@
-use crate::libraries::{
-    boxer, clipboard, crypto, git, ssl, winit, CairoLibrary, FreetypeLibrary,
-    PixmanLibrary,
-};
+use crate::libraries::{boxer, clipboard, winit};
 use clap::{AppSettings, ArgEnum, Clap};
+use libcairo_library::libcairo;
+use libfreetype_library::libfreetype;
 use libgleam_library::libgleam;
 use libglutin_library::libglutin;
+use libopenssl_library::{libcrypto, libssl};
 use libprocess_library::libprocess;
+use libsdl2_library::libsdl2;
+use libskia_library::libskia;
 use rustc_version::version_meta;
 use shared_library_builder::Library;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::str::FromStr;
-use libsdl2_library::libsdl2;
-use libskia_library::libskia;
+use libgit2_library::libgit2;
 
 #[derive(ArgEnum, Copy, Clone, Debug)]
 #[repr(u32)]
@@ -74,8 +75,6 @@ pub enum ThirdPartyLibrary {
     Sdl2,
     #[clap(name = "boxer")]
     Boxer,
-    #[clap(name = "pixman")]
-    Pixman,
     #[clap(name = "freetype")]
     Freetype,
     #[clap(name = "cairo")]
@@ -113,18 +112,17 @@ impl ThirdPartyLibrary {
         match self {
             ThirdPartyLibrary::Boxer => boxer().into(),
             ThirdPartyLibrary::Skia => libskia("v0.1.0").into(),
-            ThirdPartyLibrary::Glutin => libglutin("v0.3.0").into(),
-            ThirdPartyLibrary::Gleam => libgleam("v0.2.0").into(),
+            ThirdPartyLibrary::Glutin => libglutin("v0.4.0").into(),
+            ThirdPartyLibrary::Gleam => libgleam("v0.3.0").into(),
             ThirdPartyLibrary::Winit => winit().into(),
             ThirdPartyLibrary::Clipboard => clipboard().into(),
-            ThirdPartyLibrary::Git => git().into(),
-            ThirdPartyLibrary::Crypto => crypto().into(),
-            ThirdPartyLibrary::Ssl => ssl().into(),
+            ThirdPartyLibrary::Git => libgit2(Some("v0.1.0")).into(),
+            ThirdPartyLibrary::Crypto => libcrypto(Some("v0.1.0")).into(),
+            ThirdPartyLibrary::Ssl => libssl(Some("v0.1.0")).into(),
             ThirdPartyLibrary::Sdl2 => libsdl2(Some("v0.1.0")).into(),
-            ThirdPartyLibrary::Process => libprocess("v0.10.0").into(),
-            ThirdPartyLibrary::Freetype => FreetypeLibrary::default().into(),
-            ThirdPartyLibrary::Cairo => CairoLibrary::default().into(),
-            ThirdPartyLibrary::Pixman => PixmanLibrary::default().into(),
+            ThirdPartyLibrary::Process => libprocess("v0.12.0").into(),
+            ThirdPartyLibrary::Freetype => libfreetype(Some("v0.3.0")).into(),
+            ThirdPartyLibrary::Cairo => libcairo(Some("v0.1.0")).into(),
         }
     }
 }
