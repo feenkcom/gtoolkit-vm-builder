@@ -38,9 +38,11 @@ pub trait Bundler: Debug + Send + Sync {
             .arg("--package")
             .arg("vm-client")
             .arg("--bin")
-            .arg(options.cargo_bin_name())
-            .arg("--target")
-            .arg(options.target().to_string());
+            .arg(options.cargo_bin_name());
+
+        if !options.target().is_current() {
+            command.arg("--target").arg(options.target().to_string());
+        }
 
         match options.verbose() {
             0 => {}

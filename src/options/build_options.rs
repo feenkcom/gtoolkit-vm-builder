@@ -2,6 +2,7 @@ use crate::libraries::{boxer, clipboard, winit};
 use clap::{AppSettings, ArgEnum, Clap};
 use libcairo_library::libcairo;
 use libfreetype_library::libfreetype;
+use libgit2_library::libgit2;
 use libgleam_library::libgleam;
 use libglutin_library::libglutin;
 use libopenssl_library::{libcrypto, libssl};
@@ -13,9 +14,8 @@ use shared_library_builder::Library;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::str::FromStr;
-use libgit2_library::libgit2;
 
-#[derive(ArgEnum, Copy, Clone, Debug)]
+#[derive(ArgEnum, Copy, Clone, Debug, Eq, PartialEq)]
 #[repr(u32)]
 pub enum Target {
     #[clap(name = "x86_64-apple-darwin")]
@@ -29,6 +29,10 @@ pub enum Target {
 }
 
 impl Target {
+    pub fn for_current_platform() -> Self {
+        <Target as FromStr>::from_str(&*version_meta().unwrap().host).unwrap()
+    }
+
     pub fn is_unix(&self) -> bool {
         match self {
             Target::X8664appleDarwin => true,
@@ -45,6 +49,10 @@ impl Target {
             Target::X8664pcWindowsMsvc => true,
             Target::X8664UnknownlinuxGNU => false,
         }
+    }
+
+    pub fn is_current(&self) -> bool {
+        self.eq(&Self::for_current_platform())
     }
 }
 

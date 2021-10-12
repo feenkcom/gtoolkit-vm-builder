@@ -112,9 +112,11 @@ impl BundleOptions {
     }
 
     pub fn compilation_location(&self) -> PathBuf {
-        self.target_dir()
-            .join(self.target().to_string())
-            .join(if self.release() { "release" } else { "debug" })
+        let mut location = self.target_dir().clone();
+        if !self.target().is_current() {
+            location = location.join(self.target().to_string());
+        }
+        location.join(self.profile())
     }
 
     pub fn bundle_location(&self) -> PathBuf {
