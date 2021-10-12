@@ -145,11 +145,10 @@ impl BundleOptions {
     }
 
     pub fn default_bundle_location(&self) -> PathBuf {
-        let mut location = self.compilation_location();
-        if self.target().is_current() {
-            location = location.join(self.target().to_string());
-        }
-        location.join("bundle")
+        self.target_dir()
+            .join(self.target().to_string())
+            .join(self.profile())
+            .join("bundle")
     }
 
     pub fn third_party_libraries_sources_directory(&self) -> PathBuf {
