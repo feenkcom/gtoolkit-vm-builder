@@ -124,13 +124,13 @@ impl ThirdPartyLibrary {
             ThirdPartyLibrary::Gleam => libgleam("v0.3.0").into(),
             ThirdPartyLibrary::Winit => winit().into(),
             ThirdPartyLibrary::Clipboard => clipboard().into(),
-            ThirdPartyLibrary::Git => libgit2(Some("v0.1.0")).into(),
-            ThirdPartyLibrary::Crypto => libcrypto(Some("v0.1.0")).into(),
-            ThirdPartyLibrary::Ssl => libssl(Some("v0.1.0")).into(),
-            ThirdPartyLibrary::Sdl2 => libsdl2(Some("v0.1.0")).into(),
+            ThirdPartyLibrary::Git => libgit2(Some("v0.2.0")).into(),
+            ThirdPartyLibrary::Crypto => libcrypto(Some("v0.2.0")).into(),
+            ThirdPartyLibrary::Ssl => libssl(Some("v0.2.0")).into(),
+            ThirdPartyLibrary::Sdl2 => libsdl2(Some("v0.2.0")).into(),
             ThirdPartyLibrary::Process => libprocess("v0.12.0").into(),
-            ThirdPartyLibrary::Freetype => libfreetype(Some("v0.3.0")).into(),
-            ThirdPartyLibrary::Cairo => libcairo(Some("v0.1.0")).into(),
+            ThirdPartyLibrary::Freetype => libfreetype(Some("v0.4.0")).into(),
+            ThirdPartyLibrary::Cairo => libcairo(Some("v0.3.0")).into(),
         }
     }
 }

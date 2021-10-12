@@ -728,7 +728,7 @@ checksum = "dd8f7255a17a627354f321ef0055d63b898c6fb27eff628af4d1b66b7331edf6"
 [[package]]
 name = "libcairo-library"
 version = "0.1.0"
-source = "git+https://github.com/feenkcom/libcairo.git#11ec0e0916214cb0cffaeaf43697188c78ce1280"
+source = "git+https://github.com/feenkcom/libcairo.git#304b0d515efbfd4425326ca7cad02b95f94043c7"
 dependencies = [
  "file-matcher",
  "libfreetype-library",
@@ -740,7 +740,7 @@ dependencies = [
 [[package]]
 name = "libfreetype-library"
 version = "0.1.0"
-source = "git+https://github.com/feenkcom/libfreetype.git#af20d11ecdcfe3cf74d44b8fd26fcefdaa6a244e"
+source = "git+https://github.com/feenkcom/libfreetype.git#81f45beb719f1ffc0df8ec68a58df2149b779a18"
 dependencies = [
  "file-matcher",
  "shared-library-builder",
@@ -750,7 +750,7 @@ dependencies = [
 [[package]]
 name = "libgit2-library"
 version = "0.1.0"
-source = "git+https://github.com/feenkcom/libgit2.git#6d88bfe40aa52a36040dc06ccf7df9bb25e51c2c"
+source = "git+https://github.com/feenkcom/libgit2.git#0e7f1f22dc9d996bd2266e2d4d40fdfff2a18658"
 dependencies = [
  "file-matcher",
  "libopenssl-library",
@@ -778,7 +778,7 @@ dependencies = [
 [[package]]
 name = "libopenssl-library"
 version = "0.1.0"
-source = "git+https://github.com/feenkcom/libopenssl.git#1037c7d54f01fbfc4b8ccd1050407df439b31604"
+source = "git+https://github.com/feenkcom/libopenssl.git#af8fd644b031f75b339b611501651b2954a32cfb"
 dependencies = [
  "shared-library-builder",
  "which",
@@ -795,7 +795,7 @@ dependencies = [
 [[package]]
 name = "libsdl2-library"
 version = "0.1.0"
-source = "git+https://github.com/feenkcom/libsdl2.git#bf3405f1079338dc489215077bf5a516a61c0a15"
+source = "git+https://github.com/feenkcom/libsdl2.git#26f1c41dfec5a56119efdb91c06dd6b6b438b37d"
 dependencies = [
  "shared-library-builder",
 ]
@@ -1159,9 +1159,9 @@ checksum = "bc881b2c22681370c6a780e47af9840ef841837bc98118431d4e1868bd0c1086"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.29"
+version = "1.0.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9f5105d4fdaab20335ca9565e106a5d9b82b6219b5ba735731124ac6711d23d"
+checksum = "edc3358ebc67bc8b7fa0c007f945b0b18226f78437d61bec735a9eb96b61ee70"
 dependencies = [
  "unicode-xid",
 ]
@@ -1427,7 +1427,7 @@ dependencies = [
 [[package]]
 name = "shared-library-builder"
 version = "0.2.0"
-source = "git+https://github.com/feenkcom/shared-library-builder-rs#9fedab9519826e6ea20579863f921894deb14a0c"
+source = "git+https://github.com/feenkcom/shared-library-builder-rs#4324bb5ff8a43c41eee82b91c677ac05e5bddc04"
 dependencies = [
  "cmake",
  "downloader",
