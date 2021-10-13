@@ -23,6 +23,9 @@ pub trait Bundler: Debug + Send + Sync {
 
     fn compile_binary(&self, options: &ExecutableOptions) {
         std::env::set_var("CARGO_TARGET_DIR", options.target_dir());
+        if !options.target().is_current() {
+            std::env::set_var("CARGO_TARGET", options.target().to_string());
+        }
 
         if let Some(vmmaker_vm) = options.vmmaker_vm() {
             std::env::set_var("VM_CLIENT_VMMAKER", vmmaker_vm);
