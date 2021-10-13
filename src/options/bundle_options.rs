@@ -1,9 +1,10 @@
 use crate::{ResolvedOptions, Target};
 use feenk_releaser::Version;
+use serde::{Deserialize, Serialize};
 use shared_library_builder::Library;
 use std::path::{Path, PathBuf};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum Executable {
     App,
     Cli,
@@ -41,7 +42,7 @@ impl Executable {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BundleOptions {
     options: ResolvedOptions,
     executables: Vec<Executable>,

@@ -1,6 +1,7 @@
 use crate::bundlers::Bundler;
 use crate::options::BundleOptions;
 use crate::{Executable, ExecutableOptions};
+use serde::{Deserialize, Serialize};
 use std::error::Error;
 use std::fs;
 use std::fs::File;
@@ -126,7 +127,7 @@ impl Bundler for WindowsBundler {
         let app_name = options.app_name();
 
         let app_dir = bundle_location.join(&app_name);
-        let binary_dir = app_dir.join("bin");
+        let binary_dir = self.bundled_executable_directory(options);
 
         if app_dir.exists() {
             fs::remove_dir_all(&app_dir).unwrap();
@@ -159,12 +160,19 @@ impl Bundler for WindowsBundler {
         .unwrap();
     }
 
+    fn bundled_executable_directory(&self, options: &BundleOptions) -> PathBuf {
+        options
+            .bundle_location()
+            .join(options.app_name())
+            .join("bin")
+    }
+
     fn clone_bundler(&self) -> Box<dyn Bundler> {
         Box::new(Clone::clone(self))
     }
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 struct Info {
     bundle_name: String,
     bundle_identifier: String,

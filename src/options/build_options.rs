@@ -10,12 +10,15 @@ use libprocess_library::libprocess;
 use libsdl2_library::libsdl2;
 use libskia_library::libskia;
 use rustc_version::version_meta;
+use serde::{Deserialize, Serialize};
 use shared_library_builder::Library;
+use std::convert::TryFrom;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::str::FromStr;
 
-#[derive(ArgEnum, Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(ArgEnum, Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(try_from = "String", into = "String")]
 #[repr(u32)]
 pub enum Target {
     #[clap(name = "x86_64-apple-darwin")]
@@ -70,7 +73,21 @@ impl ToString for Target {
     }
 }
 
-#[derive(ArgEnum, Copy, Clone, Debug)]
+impl TryFrom<String> for Target {
+    type Error = String;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        <Target as ArgEnum>::from_str(value.as_str(), true)
+    }
+}
+
+impl From<Target> for String {
+    fn from(target: Target) -> Self {
+        target.to_string()
+    }
+}
+
+#[derive(ArgEnum, Copy, Clone, Debug, Serialize, Deserialize)]
 #[repr(u32)]
 pub enum ThirdPartyLibrary {
     #[clap(name = "git")]
@@ -128,17 +145,17 @@ impl ThirdPartyLibrary {
             ThirdPartyLibrary::Crypto => libcrypto(Some("v0.2.0")).into(),
             ThirdPartyLibrary::Ssl => libssl(Some("v0.2.0")).into(),
             ThirdPartyLibrary::Sdl2 => libsdl2(Some("v0.2.0")).into(),
-            ThirdPartyLibrary::Process => libprocess("v0.12.0").into(),
+            ThirdPartyLibrary::Process => libprocess("v0.13.0").into(),
             ThirdPartyLibrary::Freetype => libfreetype(Some("v0.4.0")).into(),
             ThirdPartyLibrary::Cairo => libcairo(Some("v0.3.0")).into(),
         }
     }
 }
 
-#[derive(Clap, Clone, Debug, Default)]
+#[derive(Clap, Clone, Debug, Default, Serialize, Deserialize)]
 #[clap(version = "1.0", author = "feenk gmbh <contact@feenk.com>")]
 #[clap(setting = AppSettings::ColoredHelp)]
-pub struct BuildOptions {
+pub struct BuilderOptions {
     /// A level of verbosity, and can be used multiple times
     #[clap(short, long, parse(from_occurrences))]
     verbose: i32,
@@ -149,6 +166,7 @@ pub struct BuildOptions {
     /// To cross-compile and bundle an application for another OS
     target: Option<Target>,
     #[clap(long, parse(from_os_str))]
+    #[serde(skip)]
     /// Path to directory which cargo will use as the root of build directory.
     target_dir: Option<PathBuf>,
     /// A name of the app
@@ -156,6 +174,7 @@ pub struct BuildOptions {
     app_name: Option<String>,
     /// An output location of the bundle. By default a bundle is placed inside of the cargo's target dir in the following format: target/{target architecture}/{build|release}/
     #[clap(long, parse(from_os_str))]
+    #[serde(skip)]
     bundle_dir: Option<PathBuf>,
     /// MacOS only. Specify a path to a plist file to be bundled with the app
     #[clap(long, parse(from_os_str))]
@@ -181,13 +200,15 @@ pub struct BuildOptions {
     libraries: Option<Vec<ThirdPartyLibrary>>,
     /// Use a specific VM to run a VMMaker, must be a path to the executable. When specified, the build will not attempt to download a VM
     #[clap(long, parse(from_os_str))]
+    #[serde(skip)]
     vmmaker_vm: Option<PathBuf>,
     /// Use a specific image to build a VMMaker from, must be a path to the .image. When specified, the build will not attempt to download an image
     #[clap(long, parse(from_os_str))]
+    #[serde(skip)]
     vmmaker_image: Option<PathBuf>,
 }
 
-impl BuildOptions {
+impl BuilderOptions {
     pub fn target(&self) -> Target {
         self.target.as_ref().map_or_else(
             || <Target as FromStr>::from_str(&*version_meta().unwrap().host).unwrap(),

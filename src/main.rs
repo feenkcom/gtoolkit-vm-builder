@@ -1,7 +1,4 @@
 extern crate clap;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
 extern crate cmake;
 extern crate crossbeam;
 extern crate downloader;
@@ -10,6 +7,7 @@ extern crate file_matcher;
 extern crate flate2;
 extern crate mustache;
 extern crate pkg_config;
+extern crate serde;
 extern crate shared_library_builder;
 extern crate tar;
 extern crate url;
@@ -26,22 +24,23 @@ pub use error::*;
 pub use options::*;
 
 use clap::Clap;
+use std::io::Write;
 
 use crate::bundlers::linux::LinuxBundler;
 use crate::bundlers::mac::MacBundler;
 use crate::bundlers::windows::WindowsBundler;
 use crate::bundlers::Bundler;
-use crate::options::{BuildOptions, BundleOptions, Executable, Target};
+use crate::options::{BuilderOptions, BundleOptions, Executable, Target};
 
 fn main() -> Result<()> {
-    let build_options: BuildOptions = BuildOptions::parse();
+    let build_options: BuilderOptions = BuilderOptions::parse();
 
     build_synchronously(build_options)?;
 
     Ok(())
 }
 
-fn build_synchronously(build_options: BuildOptions) -> Result<()> {
+fn build_synchronously(build_options: BuilderOptions) -> Result<()> {
     let resolved_options = ResolvedOptions::new(build_options);
     let bundler = bundler(&resolved_options);
 
@@ -61,6 +60,24 @@ fn build_synchronously(build_options: BuildOptions) -> Result<()> {
     bundler.compile_third_party_libraries(&bundle_options)?;
     bundler.bundle(&bundle_options);
 
+    export_build_info(&bundler, &bundle_options)?;
+
+    Ok(())
+}
+
+fn export_build_info(bundler: &Box<dyn Bundler>, bundle_options: &BundleOptions) -> Result<()> {
+    let executables_dir = bundler.bundled_executable_directory(&bundle_options);
+
+    if !executables_dir.exists() {
+        std::fs::create_dir_all(&executables_dir)?;
+    }
+
+    let json = serde_json::to_string_pretty(&bundle_options)?;
+    let file_path = bundler
+        .bundled_executable_directory(&bundle_options)
+        .join("build-info.json");
+    let mut file = std::fs::File::create(file_path)?;
+    writeln!(&mut file, "{}", json).unwrap();
     Ok(())
 }
 

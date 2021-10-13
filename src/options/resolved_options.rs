@@ -1,13 +1,58 @@
-use crate::{BuildOptions, Target};
+use crate::{BuilderOptions, Target};
+use chrono::Utc;
 use feenk_releaser::{Version, VersionBump};
+use serde::{Deserialize, Serialize};
 use shared_library_builder::Library;
 use std::path::{Path, PathBuf};
 
 const DEFAULT_BUILD_DIR: &str = "target";
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BuilderInfo {
+    build_timestamp: String,
+    git_branch: String,
+    git_commit_timestamp: String,
+    git_sha: String,
+    os_version: String,
+}
+
+impl BuilderInfo {
+    pub fn new() -> Self {
+        Self {
+            build_timestamp: env!("VERGEN_BUILD_TIMESTAMP").to_string(),
+            git_branch: env!("VERGEN_GIT_BRANCH").to_string(),
+            git_commit_timestamp: env!("VERGEN_GIT_COMMIT_TIMESTAMP").to_string(),
+            git_sha: env!("VERGEN_GIT_SHA").to_string(),
+            os_version: env!("VERGEN_SYSINFO_OS_VERSION").to_string(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AppInfo {
+    build_timestamp: String,
+    git_branch: Option<String>,
+    git_sha: Option<String>,
+}
+
+impl AppInfo {
+    pub fn new() -> Self {
+        let info = git_info::get();
+
+        Self {
+            build_timestamp: Utc::now().to_string(),
+            git_branch: info.current_branch,
+            git_sha: info.head.last_commit_hash,
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ResolvedOptions {
-    options: BuildOptions,
+    builder_flags: BuilderOptions,
+    builder_info: BuilderInfo,
+    app_build_info: AppInfo,
+    #[serde(skip)]
     target_dir: PathBuf,
     target: Target,
     identifier: String,
@@ -19,7 +64,7 @@ pub struct ResolvedOptions {
 }
 
 impl ResolvedOptions {
-    pub fn new(options: BuildOptions) -> Self {
+    pub fn new(options: BuilderOptions) -> Self {
         let target_dir: PathBuf = options.target_dir().map_or_else(
             || {
                 options
@@ -67,7 +112,9 @@ impl ResolvedOptions {
         });
 
         Self {
-            options,
+            builder_flags: options,
+            builder_info: BuilderInfo::new(),
+            app_build_info: AppInfo::new(),
             target_dir,
             target,
             app_name,
@@ -113,11 +160,11 @@ impl ResolvedOptions {
     }
 
     pub fn verbose(&self) -> i32 {
-        self.options.verbose()
+        self.builder_flags.verbose()
     }
 
     pub fn release(&self) -> bool {
-        self.options.release()
+        self.builder_flags.release()
     }
 
     pub fn icons(&self) -> &Vec<PathBuf> {
@@ -125,15 +172,15 @@ impl ResolvedOptions {
     }
 
     pub fn bundle_dir(&self) -> Option<&Path> {
-        self.options.bundle_dir()
+        self.builder_flags.bundle_dir()
     }
 
     pub fn vmmaker_vm(&self) -> Option<&Path> {
-        self.options.vmmaker_vm()
+        self.builder_flags.vmmaker_vm()
     }
 
     pub fn vmmaker_image(&self) -> Option<&Path> {
-        self.options.vmmaker_image()
+        self.builder_flags.vmmaker_image()
     }
 
     pub fn libraries(&self) -> &Vec<Box<dyn Library>> {
@@ -141,14 +188,16 @@ impl ResolvedOptions {
     }
 
     pub fn workspace_directory(&self) -> Option<PathBuf> {
-        self.options.workspace_directory()
+        self.builder_flags.workspace_directory()
     }
 }
 
 impl Clone for ResolvedOptions {
     fn clone(&self) -> Self {
         Self {
-            options: self.options.clone(),
+            builder_flags: self.builder_flags.clone(),
+            builder_info: self.builder_info.clone(),
+            app_build_info: self.app_build_info.clone(),
             target_dir: self.target_dir.clone(),
             target: self.target.clone(),
             identifier: self.identifier.clone(),

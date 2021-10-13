@@ -5,6 +5,8 @@ use std::fs;
 use std::fs::File;
 use std::path::{Path, PathBuf};
 
+use serde::{Deserialize, Serialize};
+
 #[derive(Debug, Clone)]
 pub struct MacBundler {}
 
@@ -50,8 +52,9 @@ impl Bundler for MacBundler {
 
         options.executables().iter().for_each(|executable| {
             let compiled_executable_path = options.compiled_executable_path(executable);
-            let bundled_executable_path =
-                macos_dir.join(options.bundled_executable_name(executable));
+            let bundled_executable_path = self
+                .bundled_executable_directory(options)
+                .join(options.bundled_executable_name(executable));
             match fs::copy(&compiled_executable_path, &bundled_executable_path) {
                 Ok(_) => {}
                 Err(error) => {
@@ -98,12 +101,20 @@ impl Bundler for MacBundler {
         info_plist_template.render(&mut file, &info).unwrap();
     }
 
+    fn bundled_executable_directory(&self, options: &BundleOptions) -> PathBuf {
+        options
+            .bundle_location()
+            .join(format!("{}.app", options.app_name()))
+            .join("Contents")
+            .join("MacOS")
+    }
+
     fn clone_bundler(&self) -> Box<dyn Bundler> {
         Box::new(Clone::clone(self))
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 struct Info {
     bundle_name: String,
     bundle_display_name: String,

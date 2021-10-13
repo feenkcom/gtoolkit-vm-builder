@@ -3,7 +3,7 @@ use crate::options::BundleOptions;
 use crate::{Executable, ExecutableOptions};
 use std::error::Error;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use user_error::UserFacingError;
 
@@ -54,7 +54,7 @@ impl Bundler for LinuxBundler {
         let app_name = options.app_name();
 
         let app_dir = bundle_location.join(&app_name);
-        let binary_dir = app_dir.join("bin");
+        let binary_dir = self.bundled_executable_directory(options);
 
         let library_dir = app_dir.join(self.library_dir_name());
 
@@ -101,6 +101,13 @@ impl Bundler for LinuxBundler {
                     }
                 };
             });
+    }
+
+    fn bundled_executable_directory(&self, options: &BundleOptions) -> PathBuf {
+        options
+            .bundle_location()
+            .join(options.app_name())
+            .join("bin")
     }
 
     fn clone_bundler(&self) -> Box<dyn Bundler> {
