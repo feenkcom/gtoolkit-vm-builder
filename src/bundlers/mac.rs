@@ -109,6 +109,14 @@ impl Bundler for MacBundler {
             .join("MacOS")
     }
 
+    fn bundled_resources_directory(&self, options: &BundleOptions) -> PathBuf {
+        options
+            .bundle_location()
+            .join(format!("{}.app", options.app_name()))
+            .join("Contents")
+            .join("Resources")
+    }
+
     fn clone_bundler(&self) -> Box<dyn Bundler> {
         Box::new(Clone::clone(self))
     }

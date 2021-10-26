@@ -69,6 +69,7 @@ pub trait Bundler: Debug + Send + Sync {
     fn bundle(&self, options: &BundleOptions);
 
     fn bundled_executable_directory(&self, options: &BundleOptions) -> PathBuf;
+    fn bundled_resources_directory(&self, options: &BundleOptions) -> PathBuf;
 
     fn ensure_third_party_requirements(&self, options: &BundleOptions) {
         options.libraries().iter().for_each(|library| {

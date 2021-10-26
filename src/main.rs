@@ -66,7 +66,7 @@ fn build_synchronously(build_options: BuilderOptions) -> Result<()> {
 }
 
 fn export_build_info(bundler: &Box<dyn Bundler>, bundle_options: &BundleOptions) -> Result<()> {
-    let executables_dir = bundler.bundled_executable_directory(&bundle_options);
+    let executables_dir = bundler.bundled_resources_directory(&bundle_options);
 
     if !executables_dir.exists() {
         std::fs::create_dir_all(&executables_dir)?;
@@ -74,7 +74,7 @@ fn export_build_info(bundler: &Box<dyn Bundler>, bundle_options: &BundleOptions)
 
     let json = serde_json::to_string_pretty(&bundle_options)?;
     let file_path = bundler
-        .bundled_executable_directory(&bundle_options)
+        .bundled_resources_directory(&bundle_options)
         .join("build-info.json");
     let mut file = std::fs::File::create(file_path)?;
     writeln!(&mut file, "{}", json).unwrap();

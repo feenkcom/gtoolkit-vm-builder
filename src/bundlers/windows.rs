@@ -167,6 +167,13 @@ impl Bundler for WindowsBundler {
             .join("bin")
     }
 
+    fn bundled_resources_directory(&self, options: &BundleOptions) -> PathBuf {
+        options
+            .bundle_location()
+            .join(options.app_name())
+            .join("share")
+    }
+
     fn clone_bundler(&self) -> Box<dyn Bundler> {
         Box::new(Clone::clone(self))
     }
