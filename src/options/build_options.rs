@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use crate::libraries::{boxer, clipboard, winit};
 use clap::{AppSettings, ArgEnum, Clap};
 use libcairo_library::libcairo;
@@ -13,6 +14,7 @@ use rustc_version::version_meta;
 use serde::{Deserialize, Serialize};
 use shared_library_builder::Library;
 use std::convert::TryFrom;
+use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::str::FromStr;
@@ -87,7 +89,7 @@ impl From<Target> for String {
     }
 }
 
-#[derive(ArgEnum, Copy, Clone, Debug, Serialize, Deserialize)]
+#[derive(ArgEnum, Copy, Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[repr(u32)]
 pub enum ThirdPartyLibrary {
     #[clap(name = "git")]
@@ -118,6 +120,26 @@ pub enum ThirdPartyLibrary {
     Process,
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct VersionedThirdPartyLibraries {
+    #[serde(flatten)]
+    libraries: HashMap<ThirdPartyLibrary, String>,
+}
+
+impl VersionedThirdPartyLibraries {
+    pub fn new() -> Self {
+        Self { libraries: HashMap::new() }
+    }
+
+    pub fn get_version_of(&self, library: ThirdPartyLibrary) -> Option<&str> {
+        self.libraries.get(&library).map(|version| version.as_str())
+    }
+
+    pub fn version_of(&self, library: ThirdPartyLibrary) -> &str {
+        self.get_version_of(library).expect("Could not find a library version")
+    }
+}
+
 impl FromStr for ThirdPartyLibrary {
     type Err = String;
 
@@ -133,21 +155,21 @@ impl ToString for ThirdPartyLibrary {
 }
 
 impl ThirdPartyLibrary {
-    pub fn as_library(&self) -> Box<dyn Library> {
+    pub fn as_library(&self, versions: &VersionedThirdPartyLibraries) -> Box<dyn Library> {
         match self {
             ThirdPartyLibrary::Boxer => boxer().into(),
-            ThirdPartyLibrary::Skia => libskia("v0.1.0").into(),
-            ThirdPartyLibrary::Glutin => libglutin("v0.4.0").into(),
-            ThirdPartyLibrary::Gleam => libgleam("v0.3.0").into(),
-            ThirdPartyLibrary::Winit => winit().into(),
+            ThirdPartyLibrary::Cairo => libcairo(versions.get_version_of(ThirdPartyLibrary::Cairo)).into(),
             ThirdPartyLibrary::Clipboard => clipboard().into(),
-            ThirdPartyLibrary::Git => libgit2(Some("v0.2.0")).into(),
-            ThirdPartyLibrary::Crypto => libcrypto(Some("v0.2.0")).into(),
-            ThirdPartyLibrary::Ssl => libssl(Some("v0.2.0")).into(),
-            ThirdPartyLibrary::Sdl2 => libsdl2(Some("v0.2.0")).into(),
-            ThirdPartyLibrary::Process => libprocess("v0.13.0").into(),
-            ThirdPartyLibrary::Freetype => libfreetype(Some("v0.4.0")).into(),
-            ThirdPartyLibrary::Cairo => libcairo(Some("v0.3.0")).into(),
+            ThirdPartyLibrary::Crypto => libcrypto(versions.get_version_of(ThirdPartyLibrary::Crypto)).into(),
+            ThirdPartyLibrary::Freetype => libfreetype(versions.get_version_of(ThirdPartyLibrary::Freetype)).into(),
+            ThirdPartyLibrary::Git => libgit2(versions.get_version_of(ThirdPartyLibrary::Git)).into(),
+            ThirdPartyLibrary::Gleam => libgleam(versions.version_of(ThirdPartyLibrary::Gleam)).into(),
+            ThirdPartyLibrary::Glutin => libglutin(versions.version_of(ThirdPartyLibrary::Glutin)).into(),
+            ThirdPartyLibrary::Process => libprocess(versions.version_of(ThirdPartyLibrary::Process)).into(),
+            ThirdPartyLibrary::Sdl2 => libsdl2(versions.get_version_of(ThirdPartyLibrary::Sdl2)).into(),
+            ThirdPartyLibrary::Skia => libskia(versions.version_of(ThirdPartyLibrary::Skia)).into(),
+            ThirdPartyLibrary::Ssl => libssl(versions.get_version_of(ThirdPartyLibrary::Ssl)).into(),
+            ThirdPartyLibrary::Winit => winit().into(),
         }
     }
 }
@@ -198,6 +220,9 @@ pub struct BuilderOptions {
     #[clap(long, possible_values = ThirdPartyLibrary::VARIANTS, case_insensitive = true)]
     /// Include third party libraries
     libraries: Option<Vec<ThirdPartyLibrary>>,
+    #[clap(long, parse(from_os_str))]
+    /// A file that describes the versions of libraries
+    libraries_versions: Option<PathBuf>,
     /// Use a specific VM to run a VMMaker, must be a path to the executable. When specified, the build will not attempt to download a VM
     #[clap(long, parse(from_os_str))]
     #[serde(skip)]
@@ -279,5 +304,17 @@ impl BuilderOptions {
 
     pub fn libraries(&self) -> Option<&Vec<ThirdPartyLibrary>> {
         self.libraries.as_ref()
+    }
+
+    pub fn libraries_versions(&self) -> VersionedThirdPartyLibraries {
+        match &self.libraries_versions {
+            None => VersionedThirdPartyLibraries::new(),
+            Some(versions_file) => serde_yaml::from_str(
+                fs::read_to_string(versions_file)
+                    .expect("Failed to read versions file")
+                    .as_str(),
+            )
+            .expect("Failed to deserialized versions"),
+        }
     }
 }

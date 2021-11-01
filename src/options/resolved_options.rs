@@ -104,10 +104,11 @@ impl ResolvedOptions {
                 .collect::<Vec<PathBuf>>()
         });
 
+        let libraries_versions = options.libraries_versions();
         let libraries = options.libraries().map_or(vec![], |libraries| {
             libraries
                 .iter()
-                .map(|each| each.as_library())
+                .map(|each| each.as_library(&libraries_versions))
                 .collect::<Vec<Box<dyn Library>>>()
         });
 
