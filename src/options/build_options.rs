@@ -309,7 +309,7 @@ impl BuilderOptions {
     pub fn libraries_versions(&self) -> VersionedThirdPartyLibraries {
         match &self.libraries_versions {
             None => VersionedThirdPartyLibraries::new(),
-            Some(versions_file) => serde_yaml::from_str(
+            Some(versions_file) => serde_json::from_str(
                 fs::read_to_string(versions_file)
                     .expect("Failed to read versions file")
                     .as_str(),
