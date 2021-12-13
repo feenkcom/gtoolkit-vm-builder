@@ -23,11 +23,11 @@ chmod +x gtoolkit-vm-builder
 ```
 ./gtoolkit-vm-builder \
     --release \
-    --vmmaker-vm /home/ubuntu/vmmaker/pharo \
     --app-name 'GlamorousToolkit' \
     --identifier 'com.gtoolkit' \
     --author "feenk gmbh <contact@feenk.com>" \
-    --libraries cairo freetype git sdl2 boxer clipboard gleam glutin skia
+    --libraries-version libraries.version \
+    --libraries boxer cairo clipboard crypto freetype git gleam glutin process sdl2 skia
 ```
 
 The resulting bundle will be created in the `target/${TARGET}/release/bundle` folder
