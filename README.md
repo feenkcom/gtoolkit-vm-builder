@@ -26,7 +26,7 @@ chmod +x gtoolkit-vm-builder
     --app-name 'GlamorousToolkit' \
     --identifier 'com.gtoolkit' \
     --author "feenk gmbh <contact@feenk.com>" \
-    --libraries-version libraries.version \
+    --libraries-versions libraries.version \
     --libraries boxer cairo clipboard crypto freetype git gleam glutin process sdl2 skia
 ```
 
