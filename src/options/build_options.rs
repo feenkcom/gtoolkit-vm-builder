@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use crate::libraries::{boxer, clipboard, winit};
 use clap::{AppSettings, ArgEnum, Clap};
 use libcairo_library::libcairo;
@@ -13,6 +12,7 @@ use libskia_library::libskia;
 use rustc_version::version_meta;
 use serde::{Deserialize, Serialize};
 use shared_library_builder::Library;
+use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -128,7 +128,9 @@ pub struct VersionedThirdPartyLibraries {
 
 impl VersionedThirdPartyLibraries {
     pub fn new() -> Self {
-        Self { libraries: HashMap::new() }
+        Self {
+            libraries: HashMap::new(),
+        }
     }
 
     pub fn get_version_of(&self, library: ThirdPartyLibrary) -> Option<&str> {
@@ -136,7 +138,8 @@ impl VersionedThirdPartyLibraries {
     }
 
     pub fn version_of(&self, library: ThirdPartyLibrary) -> &str {
-        self.get_version_of(library).expect("Could not find a library version")
+        self.get_version_of(library)
+            .expect("Could not find a library version")
     }
 }
 
@@ -158,17 +161,35 @@ impl ThirdPartyLibrary {
     pub fn as_library(&self, versions: &VersionedThirdPartyLibraries) -> Box<dyn Library> {
         match self {
             ThirdPartyLibrary::Boxer => boxer().into(),
-            ThirdPartyLibrary::Cairo => libcairo(versions.get_version_of(ThirdPartyLibrary::Cairo)).into(),
+            ThirdPartyLibrary::Cairo => {
+                libcairo(versions.get_version_of(ThirdPartyLibrary::Cairo)).into()
+            }
             ThirdPartyLibrary::Clipboard => clipboard().into(),
-            ThirdPartyLibrary::Crypto => libcrypto(versions.get_version_of(ThirdPartyLibrary::Crypto)).into(),
-            ThirdPartyLibrary::Freetype => libfreetype(versions.get_version_of(ThirdPartyLibrary::Freetype)).into(),
-            ThirdPartyLibrary::Git => libgit2(versions.get_version_of(ThirdPartyLibrary::Git)).into(),
-            ThirdPartyLibrary::Gleam => libgleam(versions.version_of(ThirdPartyLibrary::Gleam)).into(),
-            ThirdPartyLibrary::Glutin => libglutin(versions.version_of(ThirdPartyLibrary::Glutin)).into(),
-            ThirdPartyLibrary::Process => libprocess(versions.version_of(ThirdPartyLibrary::Process)).into(),
-            ThirdPartyLibrary::Sdl2 => libsdl2(versions.get_version_of(ThirdPartyLibrary::Sdl2)).into(),
+            ThirdPartyLibrary::Crypto => {
+                libcrypto(versions.get_version_of(ThirdPartyLibrary::Crypto)).into()
+            }
+            ThirdPartyLibrary::Freetype => {
+                libfreetype(versions.get_version_of(ThirdPartyLibrary::Freetype)).into()
+            }
+            ThirdPartyLibrary::Git => {
+                libgit2(versions.get_version_of(ThirdPartyLibrary::Git)).into()
+            }
+            ThirdPartyLibrary::Gleam => {
+                libgleam(versions.version_of(ThirdPartyLibrary::Gleam)).into()
+            }
+            ThirdPartyLibrary::Glutin => {
+                libglutin(versions.version_of(ThirdPartyLibrary::Glutin)).into()
+            }
+            ThirdPartyLibrary::Process => {
+                libprocess(versions.version_of(ThirdPartyLibrary::Process)).into()
+            }
+            ThirdPartyLibrary::Sdl2 => {
+                libsdl2(versions.get_version_of(ThirdPartyLibrary::Sdl2)).into()
+            }
             ThirdPartyLibrary::Skia => libskia(versions.version_of(ThirdPartyLibrary::Skia)).into(),
-            ThirdPartyLibrary::Ssl => libssl(versions.get_version_of(ThirdPartyLibrary::Ssl)).into(),
+            ThirdPartyLibrary::Ssl => {
+                libssl(versions.get_version_of(ThirdPartyLibrary::Ssl)).into()
+            }
             ThirdPartyLibrary::Winit => winit().into(),
         }
     }
