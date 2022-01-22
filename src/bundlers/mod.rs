@@ -1,5 +1,5 @@
 use crate::options::BundleOptions;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 pub mod linux;
 pub mod mac;
@@ -167,14 +167,18 @@ pub trait Bundler: Debug + Send + Sync {
         self.compilation_location(configuration)
     }
 
-    fn compiled_libraries(&self, configuration: &BundleOptions) -> Vec<PathBuf> {
-        self.compiled_libraries_directory(configuration)
+    fn compiled_libraries(&self, options: &BundleOptions) -> Vec<PathBuf> {
+        self.compiled_libraries_in(&self.compiled_libraries_directory(options), options)
+    }
+
+    fn compiled_libraries_in(&self, directory: &Path, options: &BundleOptions) -> Vec<PathBuf> {
+        directory
             .read_dir()
             .unwrap()
             .map(|each| each.unwrap().path())
             .filter(|each| {
                 let extension = each.extension().and_then(|ext| ext.to_str());
-                match configuration.target() {
+                match options.target() {
                     Target::X8664appleDarwin => extension == Some("dylib"),
                     Target::AArch64appleDarwin => extension == Some("dylib"),
                     Target::X8664pcWindowsMsvc => extension == Some("dll"),

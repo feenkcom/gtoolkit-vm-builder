@@ -2,7 +2,7 @@
 name = "gtoolkit-vm-builder"
 version = "0.1.0"
 authors = ["feenk gmbh <contact@feenk.com>"]
-edition = "2018"
+edition = "2021"
 build = "build.rs"
 
 [[bin]]
@@ -41,6 +41,10 @@ libopenssl-library = { git = "https://github.com/feenkcom/libopenssl.git" }
 libfreetype-library = { git = "https://github.com/feenkcom/libfreetype.git" }
 libcairo-library = { git = "https://github.com/feenkcom/libcairo.git" }
 libgit2-library = { git = "https://github.com/feenkcom/libgit2.git" }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+mach_object = "0.1"
+memmap = "0.7"
 
 [build-dependencies]
 vergen = "5"

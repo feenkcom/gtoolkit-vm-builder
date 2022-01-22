@@ -1,9 +1,13 @@
 use crate::bundlers::Bundler;
 use crate::options::BundleOptions;
-use crate::Executable;
+use crate::{Executable, Result};
 use std::fs;
 use std::fs::File;
 use std::path::{Path, PathBuf};
+use std::process::Command;
+
+#[cfg(target_os = "macos")]
+use mach_object::{LoadCommand, OFile, LC_ID_DYLIB};
 
 use serde::{Deserialize, Serialize};
 
@@ -27,6 +31,116 @@ impl MacBundler {
             }
         }
         None
+    }
+
+    #[cfg(not(target_os = "macos"))]
+    fn set_rpath(filename: impl AsRef<Path>) -> Result<()> {
+        Ok(())
+    }
+
+    #[cfg(target_os = "macos")]
+    fn set_rpath(filename: impl AsRef<Path>) -> Result<()> {
+        let file = File::open(filename.as_ref())?;
+        let mmap = unsafe { memmap::Mmap::map(&file) }?;
+        let payload = mmap.as_ref();
+        let mut cur = std::io::Cursor::new(payload);
+        let file = OFile::parse(&mut cur)?;
+
+        println!("Processing {}...", filename.as_ref().display());
+
+        match file {
+            OFile::MachFile {
+                header: _,
+                ref commands,
+            } => {
+                if !Command::new("install_name_tool")
+                    .arg("-add_rpath")
+                    .arg("@executable_path/Plugins")
+                    .arg(&filename.as_ref())
+                    .status()?
+                    .success()
+                {
+                    panic!("Failed to add rpath to {}", filename.as_ref().display());
+                }
+                println!("   Added rpath to {}", filename.as_ref().display());
+
+                let commands = commands
+                    .iter()
+                    .map(|load| load.command())
+                    .cloned()
+                    .collect::<Vec<LoadCommand>>();
+
+                for command in commands {
+                    match command {
+                        LoadCommand::IdDyLib(ref dylib)
+                        | LoadCommand::LoadDyLib(ref dylib)
+                        | LoadCommand::LoadWeakDyLib(ref dylib)
+                        | LoadCommand::ReexportDyLib(ref dylib)
+                        | LoadCommand::LoadUpwardDylib(ref dylib)
+                        | LoadCommand::LazyLoadDylib(ref dylib) => {
+                            if !dylib.name.starts_with("/") {
+                                let current_path = dylib.name.as_str();
+                                let file_name = Path::new(current_path)
+                                    .file_name()
+                                    .unwrap()
+                                    .to_str()
+                                    .unwrap();
+                                let new_path = format!("@executable_path/Plugins/{}", &file_name);
+
+                                if command.cmd() == LC_ID_DYLIB {
+                                    if !Command::new("install_name_tool")
+                                        .arg("-id")
+                                        .arg(&new_path)
+                                        .arg(&filename.as_ref())
+                                        .status()?
+                                        .success()
+                                    {
+                                        panic!(
+                                            "Failed to change id to {} of {}",
+                                            &new_path,
+                                            filename.as_ref().display()
+                                        );
+                                    };
+                                    println!(
+                                        "   Changed id of {} to {}",
+                                        filename.as_ref().display(),
+                                        &new_path
+                                    );
+                                } else {
+                                    if !Command::new("install_name_tool")
+                                        .arg("-change")
+                                        .arg(&current_path)
+                                        .arg(&new_path)
+                                        .arg(&filename.as_ref())
+                                        .status()?
+                                        .success()
+                                    {
+                                        panic!(
+                                            "Failed to change {} to {} in {}",
+                                            current_path,
+                                            &new_path,
+                                            filename.as_ref().display()
+                                        );
+                                    };
+                                    println!(
+                                        "   Changed dependency of {} from {} to {}",
+                                        filename.as_ref().display(),
+                                        current_path,
+                                        &new_path
+                                    );
+                                }
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            }
+            OFile::FatFile { .. } => {}
+            OFile::ArFile { .. } => {}
+            OFile::SymDef { .. } => {}
+        };
+
+        Ok(())
     }
 }
 
@@ -56,7 +170,12 @@ impl Bundler for MacBundler {
                 .bundled_executable_directory(options)
                 .join(options.bundled_executable_name(executable));
             match fs::copy(&compiled_executable_path, &bundled_executable_path) {
-                Ok(_) => {}
+                Ok(_) => {
+                    Self::set_rpath(&bundled_executable_path).expect(&format!(
+                        "Failed to set the rpath of {}",
+                        &bundled_executable_path.display()
+                    ));
+                }
                 Err(error) => {
                     panic!(
                         "Could not copy {} to {} due to {}",
@@ -70,10 +189,17 @@ impl Bundler for MacBundler {
 
         fs_extra::copy_items(
             &self.compiled_libraries(options),
-            plugins_dir,
+            &plugins_dir,
             &fs_extra::dir::CopyOptions::new(),
         )
         .unwrap();
+
+        for library_path in self.compiled_libraries_in(&plugins_dir, options) {
+            Self::set_rpath(&library_path).expect(&format!(
+                "Failed to set the rpath of {}",
+                &library_path.display()
+            ));
+        }
 
         let icon = if let Some(icon) = self.create_icns(options) {
             let resource_icon_name = resources_dir
