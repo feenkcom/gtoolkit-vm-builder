@@ -72,12 +72,22 @@ fn export_build_info(bundler: &Box<dyn Bundler>, bundle_options: &BundleOptions)
         std::fs::create_dir_all(&executables_dir)?;
     }
 
+    // export the info about the app and third party libs
     let json = serde_json::to_string_pretty(&bundle_options)?;
     let file_path = bundler
         .bundled_resources_directory(&bundle_options)
         .join("build-info.json");
     let mut file = std::fs::File::create(file_path)?;
     writeln!(&mut file, "{}", json).unwrap();
+
+    // export the info about the vm itself
+    std::fs::copy(
+        bundle_options.compilation_location().join("vm-info.json"),
+        bundler
+            .bundled_resources_directory(&bundle_options)
+            .join("vm-info.json"),
+    )?;
+
     Ok(())
 }
 
