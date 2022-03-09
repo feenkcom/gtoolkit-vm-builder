@@ -241,7 +241,7 @@ pub struct BuilderOptions {
     /// into one .icns icon file. If .icns file is provided it is used instead and not processed.
     #[clap(long)]
     icons: Option<Vec<String>>,
-    #[clap(long, arg_enum, ignore_case = true)]
+    #[clap(long, arg_enum, ignore_case = true, multiple_values = true)]
     /// Include third party libraries
     libraries: Option<Vec<ThirdPartyLibrary>>,
     #[clap(long, parse(from_os_str))]
