@@ -1,5 +1,5 @@
 use crate::libraries::{boxer, clipboard, winit};
-use clap::{AppSettings, ArgEnum, Clap};
+use clap::{ArgEnum, Parser};
 use libcairo_library::libcairo;
 use libfreetype_library::libfreetype;
 use libgit2_library::libgit2;
@@ -59,6 +59,10 @@ impl Target {
     pub fn is_current(&self) -> bool {
         self.eq(&Self::for_current_platform())
     }
+
+    pub fn possible_variants() -> Vec<String> {
+        Self::value_variants().iter().map(|each| each.to_string()).collect()
+    }
 }
 
 impl FromStr for Target {
@@ -71,7 +75,7 @@ impl FromStr for Target {
 
 impl ToString for Target {
     fn to_string(&self) -> String {
-        (Target::VARIANTS[*self as usize]).to_owned()
+        self.to_possible_value().unwrap().get_name().to_string()
     }
 }
 
@@ -153,7 +157,7 @@ impl FromStr for ThirdPartyLibrary {
 
 impl ToString for ThirdPartyLibrary {
     fn to_string(&self) -> String {
-        (ThirdPartyLibrary::VARIANTS[*self as usize]).to_owned()
+        self.to_possible_value().unwrap().get_name().to_string()
     }
 }
 
@@ -195,9 +199,8 @@ impl ThirdPartyLibrary {
     }
 }
 
-#[derive(Clap, Clone, Debug, Default, Serialize, Deserialize)]
+#[derive(Parser, Clone, Debug, Default, Serialize, Deserialize)]
 #[clap(version = "1.0", author = "feenk gmbh <contact@feenk.com>")]
-#[clap(setting = AppSettings::ColoredHelp)]
 pub struct BuilderOptions {
     /// A level of verbosity, and can be used multiple times
     #[clap(short, long, parse(from_occurrences))]
@@ -205,7 +208,7 @@ pub struct BuilderOptions {
     /// To bundle a release build
     #[clap(long)]
     release: bool,
-    #[clap(long, possible_values = Target::VARIANTS, case_insensitive = true)]
+    #[clap(long, arg_enum, ignore_case = true)]
     /// To cross-compile and bundle an application for another OS
     target: Option<Target>,
     #[clap(long, parse(from_os_str))]
@@ -238,7 +241,7 @@ pub struct BuilderOptions {
     /// into one .icns icon file. If .icns file is provided it is used instead and not processed.
     #[clap(long)]
     icons: Option<Vec<String>>,
-    #[clap(long, possible_values = ThirdPartyLibrary::VARIANTS, case_insensitive = true)]
+    #[clap(long, arg_enum, ignore_case = true)]
     /// Include third party libraries
     libraries: Option<Vec<ThirdPartyLibrary>>,
     #[clap(long, parse(from_os_str))]

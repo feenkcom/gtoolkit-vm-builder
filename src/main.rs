@@ -23,7 +23,7 @@ mod options;
 pub use error::*;
 pub use options::*;
 
-use clap::Clap;
+use clap::Parser;
 use std::io::Write;
 
 use crate::bundlers::linux::LinuxBundler;
