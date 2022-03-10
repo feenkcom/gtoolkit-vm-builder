@@ -47,7 +47,6 @@ fn build_synchronously(build_options: BuilderOptions) -> Result<()> {
     let bundle_options =
         BundleOptions::new(resolved_options, vec![Executable::App, Executable::Cli]);
 
-    bundler.ensure_third_party_requirements(&bundle_options);
     bundler.ensure_compiled_libraries_directory(&bundle_options)?;
 
     bundle_options.executables().iter().for_each(|executable| {
