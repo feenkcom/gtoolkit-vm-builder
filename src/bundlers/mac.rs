@@ -4,10 +4,11 @@ use crate::{Executable, Result};
 use std::fs;
 use std::fs::File;
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
 #[cfg(target_os = "macos")]
 use mach_object::{LoadCommand, OFile, LC_ID_DYLIB};
+#[cfg(target_os = "macos")]
+use std::process::Command;
 
 use serde::{Deserialize, Serialize};
 
@@ -34,7 +35,7 @@ impl MacBundler {
     }
 
     #[cfg(not(target_os = "macos"))]
-    fn set_rpath(filename: impl AsRef<Path>) -> Result<()> {
+    fn set_rpath(_filename: impl AsRef<Path>) -> Result<()> {
         Ok(())
     }
 

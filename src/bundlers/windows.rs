@@ -6,7 +6,6 @@ use std::error::Error;
 use std::fs;
 use std::fs::File;
 use std::path::{Path, PathBuf};
-use std::process::Command;
 use user_error::UserFacingError;
 
 #[derive(Debug, Clone)]
@@ -37,13 +36,16 @@ impl WindowsBundler {
 
     fn set_stack_size(
         &self,
+        bundle_options: &BundleOptions,
         binary: impl AsRef<Path>,
         size_in_bytes: usize,
     ) -> Result<(), Box<dyn Error>> {
-        which::which("editbin")?;
+        let mut editbin =
+            cc::windows_registry::find(bundle_options.target().to_string().as_str(), "editbin.exe")
+                .expect("Could not find editbin.exe");
 
         let binary = binary.as_ref();
-        if !Command::new("editbin")
+        if !editbin
             .arg(format!("/STACK:{}", size_in_bytes))
             .arg(binary)
             .status()?
@@ -116,6 +118,7 @@ impl Bundler for WindowsBundler {
         }
 
         self.set_stack_size(
+            bundle_options,
             bundle_options.compiled_executable_path(executable),
             STACK_SIZE,
         )

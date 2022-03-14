@@ -61,7 +61,10 @@ impl Target {
     }
 
     pub fn possible_variants() -> Vec<String> {
-        Self::value_variants().iter().map(|each| each.to_string()).collect()
+        Self::value_variants()
+            .iter()
+            .map(|each| each.to_string())
+            .collect()
     }
 }
 
