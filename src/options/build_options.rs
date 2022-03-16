@@ -1,4 +1,4 @@
-use crate::libraries::{boxer, clipboard, winit};
+use crate::libraries::{boxer, clipboard, test_library, winit};
 use clap::{ArgEnum, Parser};
 use libcairo_library::libcairo;
 use libfreetype_library::libfreetype;
@@ -122,6 +122,8 @@ pub enum ThirdPartyLibrary {
     Clipboard,
     #[clap(name = "process")]
     Process,
+    #[clap(name = "test-library")]
+    TestLibrary,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -195,6 +197,7 @@ impl ThirdPartyLibrary {
                 libssl(versions.get_version_of(ThirdPartyLibrary::Ssl)).into()
             }
             ThirdPartyLibrary::Winit => winit().into(),
+            ThirdPartyLibrary::TestLibrary => test_library().into(),
         }
     }
 }

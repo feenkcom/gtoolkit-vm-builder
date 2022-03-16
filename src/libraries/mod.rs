@@ -1,4 +1,4 @@
-use shared_library_builder::{GitLocation, LibraryLocation, RustLibrary};
+use shared_library_builder::{GitLocation, LibraryLocation, PathLocation, RustLibrary};
 
 pub fn boxer() -> RustLibrary {
     RustLibrary::new(
@@ -18,5 +18,12 @@ pub fn clipboard() -> RustLibrary {
     RustLibrary::new(
         "Clipboard",
         LibraryLocation::Git(GitLocation::github("feenkcom", "libclipboard")),
+    )
+}
+
+pub fn test_library() -> RustLibrary {
+    RustLibrary::new(
+        "TestLibrary",
+        LibraryLocation::Path(PathLocation::new("vm-client-test-library")),
     )
 }
