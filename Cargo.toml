@@ -35,6 +35,7 @@ chrono = "0.4"
 shared-library-builder = { git = "https://github.com/feenkcom/shared-library-builder-rs", features = [ "git-location" ] }
 libprocess-library = { git = "https://github.com/feenkcom/libprocess.git" }
 libglutin-library = { git = "https://github.com/feenkcom/libglutin.git" }
+libwinit-library = { git = "https://github.com/feenkcom/libwinit.git" }
 libgleam-library = { git = "https://github.com/feenkcom/libgleam.git" }
 libskia-library = { git = "https://github.com/feenkcom/libskia.git" }
 libsdl2-library = { git = "https://github.com/feenkcom/libsdl2.git" }

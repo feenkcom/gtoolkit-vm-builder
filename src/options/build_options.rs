@@ -1,4 +1,4 @@
-use crate::libraries::{boxer, clipboard, test_library, winit};
+use crate::libraries::{boxer, clipboard, test_library};
 use clap::{ArgEnum, Parser};
 use libcairo_library::libcairo;
 use libfreetype_library::libfreetype;
@@ -9,6 +9,7 @@ use libopenssl_library::{libcrypto, libssl};
 use libprocess_library::libprocess;
 use libsdl2_library::libsdl2;
 use libskia_library::libskia;
+use libwinit_library::libwinit;
 use rustc_version::version_meta;
 use serde::{Deserialize, Serialize};
 use shared_library_builder::Library;
@@ -199,7 +200,9 @@ impl ThirdPartyLibrary {
             ThirdPartyLibrary::Ssl => {
                 libssl(versions.get_version_of(ThirdPartyLibrary::Ssl)).into()
             }
-            ThirdPartyLibrary::Winit => winit().into(),
+            ThirdPartyLibrary::Winit => {
+                libwinit(versions.version_of(ThirdPartyLibrary::Winit)).into()
+            }
             ThirdPartyLibrary::TestLibrary => test_library().into(),
         }
     }

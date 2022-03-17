@@ -671,6 +671,7 @@ dependencies = [
  "libprocess-library",
  "libsdl2-library",
  "libskia-library",
+ "libwinit-library",
  "mach_object",
  "memmap",
  "mustache",
@@ -997,6 +998,14 @@ dependencies = [
 name = "libskia-library"
 version = "0.1.0"
 source = "git+https://github.com/feenkcom/libskia.git#2a9e95a65acb944fae8167abb93c91443ce71a95"
+dependencies = [
+ "shared-library-builder",
+]
+
+[[package]]
+name = "libwinit-library"
+version = "0.1.0"
+source = "git+https://github.com/feenkcom/libwinit.git#d24c14d06aa5056e9bbf408200d600d6557ee4af"
 dependencies = [
  "shared-library-builder",
 ]

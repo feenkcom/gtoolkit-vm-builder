@@ -7,13 +7,6 @@ pub fn boxer() -> RustLibrary {
     )
 }
 
-pub fn winit() -> RustLibrary {
-    RustLibrary::new(
-        "Winit",
-        LibraryLocation::Git(GitLocation::github("feenkcom", "libwinit")),
-    )
-}
-
 pub fn clipboard() -> RustLibrary {
     RustLibrary::new(
         "Clipboard",
