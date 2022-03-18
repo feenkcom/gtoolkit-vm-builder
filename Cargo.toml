@@ -1,6 +1,6 @@
 [package]
 name = "gtoolkit-vm-builder"
-version = "0.1.0"
+version = "0.41.0"
 authors = ["feenk gmbh <contact@feenk.com>"]
 edition = "2021"
 build = "build.rs"
@@ -39,6 +39,7 @@ libwinit-library = { git = "https://github.com/feenkcom/libwinit.git" }
 libgleam-library = { git = "https://github.com/feenkcom/libgleam.git" }
 libskia-library = { git = "https://github.com/feenkcom/libskia.git" }
 libsdl2-library = { git = "https://github.com/feenkcom/libsdl2.git" }
+libpixels-library = { git = "https://github.com/feenkcom/libpixels.git" }
 libopenssl-library = { git = "https://github.com/feenkcom/libopenssl.git" }
 libfreetype-library = { git = "https://github.com/feenkcom/libfreetype.git" }
 libcairo-library = { git = "https://github.com/feenkcom/libcairo.git" }

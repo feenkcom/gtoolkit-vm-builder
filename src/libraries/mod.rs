@@ -1,3 +1,7 @@
+mod third_party;
+
+pub use third_party::{ThirdPartyLibrary, VersionedThirdPartyLibraries};
+
 use shared_library_builder::{GitLocation, LibraryLocation, PathLocation, RustLibrary};
 
 pub fn boxer() -> RustLibrary {

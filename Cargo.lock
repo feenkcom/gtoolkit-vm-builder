@@ -648,7 +648,7 @@ checksum = "641b847f0375f4b2c595438eefc17a9c0fbf47b400cbdd1ad9332bf1e16b779d"
 
 [[package]]
 name = "gtoolkit-vm-builder"
-version = "0.1.0"
+version = "0.41.0"
 dependencies = [
  "anyhow",
  "cc",
@@ -668,6 +668,7 @@ dependencies = [
  "libgleam-library",
  "libglutin-library",
  "libopenssl-library",
+ "libpixels-library",
  "libprocess-library",
  "libsdl2-library",
  "libskia-library",
@@ -976,6 +977,14 @@ dependencies = [
  "shared-library-builder",
  "typetag",
  "which",
+]
+
+[[package]]
+name = "libpixels-library"
+version = "0.1.0"
+source = "git+https://github.com/feenkcom/libpixels.git#22218391d91736b8f699fd260b0eeab5fe8cf905"
+dependencies = [
+ "shared-library-builder",
 ]
 
 [[package]]
