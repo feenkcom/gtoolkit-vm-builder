@@ -44,10 +44,11 @@ fn build_synchronously(build_options: BuilderOptions) -> Result<()> {
     let resolved_options = ResolvedOptions::new(build_options);
     let bundler = bundler(&resolved_options);
 
-    let bundle_options =
-        BundleOptions::new(resolved_options, vec![Executable::App, Executable::Cli]);
+    let bundle_options = BundleOptions::new(resolved_options);
 
     bundler.ensure_compiled_libraries_directory(&bundle_options)?;
+
+    export_build_info(&bundler, &bundle_options)?;
 
     bundle_options.executables().iter().for_each(|executable| {
         let executable_options = ExecutableOptions::new(&bundle_options, executable.clone());
@@ -58,8 +59,6 @@ fn build_synchronously(build_options: BuilderOptions) -> Result<()> {
 
     bundler.compile_third_party_libraries(&bundle_options)?;
     bundler.bundle(&bundle_options);
-
-    export_build_info(&bundler, &bundle_options)?;
 
     Ok(())
 }
@@ -74,18 +73,13 @@ fn export_build_info(bundler: &Box<dyn Bundler>, bundle_options: &BundleOptions)
     // export the info about the app and third party libs
     let json = serde_json::to_string_pretty(&bundle_options)?;
     let file_path = bundler
-        .bundled_resources_directory(&bundle_options)
+        .compilation_location(&bundle_options)
         .join("build-info.json");
+
+    std::env::set_var("APP_BUILD_INFO", file_path.as_os_str());
+
     let mut file = std::fs::File::create(file_path)?;
     writeln!(&mut file, "{}", json).unwrap();
-
-    // export the info about the vm itself
-    std::fs::copy(
-        bundle_options.compilation_location().join("vm-info.json"),
-        bundler
-            .bundled_resources_directory(&bundle_options)
-            .join("vm-info.json"),
-    )?;
 
     Ok(())
 }

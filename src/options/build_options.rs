@@ -1,6 +1,7 @@
 use clap::{ArgEnum, Parser};
 
 use crate::libraries::{ThirdPartyLibrary, VersionedThirdPartyLibraries};
+use crate::Executable;
 use rustc_version::version_meta;
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
@@ -142,6 +143,9 @@ pub struct BuilderOptions {
     #[clap(long, parse(from_os_str))]
     #[serde(skip)]
     vmmaker_image: Option<PathBuf>,
+    /// Pick which executables to compile. This allows users to create an app without CLI or GUI interface.
+    #[clap(long, arg_enum, ignore_case = true, multiple_values = true)]
+    executables: Option<Vec<Executable>>,
 }
 
 impl BuilderOptions {
@@ -227,5 +231,9 @@ impl BuilderOptions {
             )
             .expect("Failed to deserialized versions"),
         }
+    }
+
+    pub fn executables(&self) -> Option<&Vec<Executable>> {
+        self.executables.as_ref()
     }
 }

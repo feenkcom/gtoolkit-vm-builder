@@ -1,4 +1,4 @@
-use crate::{BuilderOptions, Target};
+use crate::{BuilderOptions, Executable, Target};
 use chrono::Utc;
 use feenk_releaser::{Version, VersionBump};
 use serde::{Deserialize, Serialize};
@@ -61,6 +61,7 @@ pub struct ResolvedOptions {
     version: Version,
     icons: Vec<PathBuf>,
     libraries: Vec<Box<dyn Library>>,
+    executables: Vec<Executable>,
 }
 
 impl ResolvedOptions {
@@ -112,6 +113,12 @@ impl ResolvedOptions {
                 .collect::<Vec<Box<dyn Library>>>()
         });
 
+        let executables = options
+            .executables()
+            .map_or(vec![Executable::Cli, Executable::App], |values| {
+                values.clone()
+            });
+
         Self {
             builder_flags: options,
             builder_info: BuilderInfo::new(),
@@ -124,6 +131,7 @@ impl ResolvedOptions {
             version,
             icons,
             libraries,
+            executables,
         }
     }
 
@@ -188,6 +196,10 @@ impl ResolvedOptions {
         &self.libraries
     }
 
+    pub fn executables(&self) -> &Vec<Executable> {
+        &self.executables
+    }
+
     pub fn workspace_directory(&self) -> Option<PathBuf> {
         self.builder_flags.workspace_directory()
     }
@@ -211,6 +223,7 @@ impl Clone for ResolvedOptions {
                 .iter()
                 .map(|library| library.clone_library())
                 .collect(),
+            executables: self.executables.clone(),
         }
     }
 }

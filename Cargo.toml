@@ -49,6 +49,9 @@ libgit2-library = { git = "https://github.com/feenkcom/libgit2.git" }
 mach_object = "0.1"
 memmap = "0.7"
 
+#[patch.'https://github.com/feenkcom/shared-library-builder-rs']
+#shared-library-builder = { path = "../shared-library-builder-rs" }
+
 [build-dependencies]
 vergen = "5"
 anyhow = "1"
