@@ -85,10 +85,9 @@ fn export_build_info(bundler: &Box<dyn Bundler>, bundle_options: &BundleOptions)
 }
 
 fn bundler(options: &ResolvedOptions) -> Box<dyn Bundler> {
-    match options.target() {
-        Target::X8664appleDarwin => Box::new(MacBundler::new()),
-        Target::AArch64appleDarwin => Box::new(MacBundler::new()),
-        Target::X8664pcWindowsMsvc => Box::new(WindowsBundler::new()),
-        Target::X8664UnknownlinuxGNU => Box::new(LinuxBundler::new()),
+    match options.platform() {
+        Platform::Mac => Box::new(MacBundler::new()),
+        Platform::Windows => Box::new(WindowsBundler::new()),
+        Platform::Linux => Box::new(LinuxBundler::new()),
     }
 }

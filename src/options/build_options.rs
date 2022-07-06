@@ -20,6 +20,8 @@ pub enum Target {
     AArch64appleDarwin,
     #[clap(name = "x86_64-pc-windows-msvc")]
     X8664pcWindowsMsvc,
+    #[clap(name = "aarch64-pc-windows-msvc")]
+    AArch64pcWindowsMsvc,
     #[clap(name = "x86_64-unknown-linux-gnu")]
     X8664UnknownlinuxGNU,
 }
@@ -29,22 +31,22 @@ impl Target {
         <Target as FromStr>::from_str(&*version_meta().unwrap().host).unwrap()
     }
 
-    pub fn is_unix(&self) -> bool {
+    pub fn platform(&self) -> Platform {
         match self {
-            Target::X8664appleDarwin => true,
-            Target::AArch64appleDarwin => true,
-            Target::X8664pcWindowsMsvc => false,
-            Target::X8664UnknownlinuxGNU => true,
+            Target::X8664appleDarwin => Platform::Mac,
+            Target::AArch64appleDarwin => Platform::Mac,
+            Target::X8664pcWindowsMsvc => Platform::Windows,
+            Target::AArch64pcWindowsMsvc => Platform::Windows,
+            Target::X8664UnknownlinuxGNU => Platform::Linux,
         }
     }
 
+    pub fn is_unix(&self) -> bool {
+        self.platform().is_unix()
+    }
+
     pub fn is_windows(&self) -> bool {
-        match self {
-            Target::X8664appleDarwin => false,
-            Target::AArch64appleDarwin => false,
-            Target::X8664pcWindowsMsvc => true,
-            Target::X8664UnknownlinuxGNU => false,
-        }
+        self.platform().is_windows()
     }
 
     pub fn is_current(&self) -> bool {
@@ -84,6 +86,30 @@ impl TryFrom<String> for Target {
 impl From<Target> for String {
     fn from(target: Target) -> Self {
         target.to_string()
+    }
+}
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[repr(u32)]
+pub enum Platform {
+    Mac,
+    Windows,
+    Linux,
+}
+
+impl Platform {
+    pub fn is_unix(&self) -> bool {
+        match self {
+            Platform::Mac | Platform::Linux => true,
+            Platform::Windows => false,
+        }
+    }
+
+    pub fn is_windows(&self) -> bool {
+        match self {
+            Platform::Mac | Platform::Linux => false,
+            Platform::Windows => true,
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-use crate::{ResolvedOptions, Target};
+use crate::{Platform, ResolvedOptions, Target};
 use clap::ArgEnum;
 use feenk_releaser::Version;
 use serde::{Deserialize, Serialize};
@@ -60,6 +60,10 @@ impl BundleOptions {
 
     pub fn target(&self) -> &Target {
         self.options.target()
+    }
+
+    pub fn platform(&self) -> Platform {
+        self.options.platform()
     }
 
     pub fn target_dir(&self) -> &PathBuf {

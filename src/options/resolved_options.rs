@@ -1,4 +1,4 @@
-use crate::{BuilderOptions, Executable, Target};
+use crate::{BuilderOptions, Executable, Platform, Target};
 use chrono::Utc;
 use feenk_releaser::{Version, VersionBump};
 use serde::{Deserialize, Serialize};
@@ -137,6 +137,10 @@ impl ResolvedOptions {
 
     pub fn target(&self) -> &Target {
         &self.target
+    }
+
+    pub fn platform(&self) -> Platform {
+        self.target.platform()
     }
 
     pub fn target_dir(&self) -> &PathBuf {

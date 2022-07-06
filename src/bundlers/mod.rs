@@ -5,7 +5,7 @@ pub mod linux;
 pub mod mac;
 pub mod windows;
 
-use crate::{Error, Result, Target};
+use crate::{Error, Platform, Result};
 use crate::{Executable, ExecutableOptions};
 use shared_library_builder::{Library, LibraryCompilationContext, LibraryTarget};
 use std::fmt::Debug;
@@ -171,11 +171,10 @@ pub trait Bundler: Debug + Send + Sync {
             .map(|each| each.unwrap().path())
             .filter(|each| {
                 let extension = each.extension().and_then(|ext| ext.to_str());
-                match options.target() {
-                    Target::X8664appleDarwin => extension == Some("dylib"),
-                    Target::AArch64appleDarwin => extension == Some("dylib"),
-                    Target::X8664pcWindowsMsvc => extension == Some("dll"),
-                    Target::X8664UnknownlinuxGNU => extension == Some("so"),
+                match options.platform() {
+                    Platform::Mac => extension == Some("dylib"),
+                    Platform::Windows => extension == Some("dll"),
+                    Platform::Linux => extension == Some("so"),
                 }
             })
             .collect()
