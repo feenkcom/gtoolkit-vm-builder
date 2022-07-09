@@ -1,6 +1,6 @@
 use clap::ArgEnum;
 use serde::{Deserialize, Serialize};
-use shared_library_builder::Library;
+use shared_library_builder::{Library, LibraryTarget};
 use std::collections::HashMap;
 use std::str::FromStr;
 
@@ -90,7 +90,11 @@ impl ToString for ThirdPartyLibrary {
 }
 
 impl ThirdPartyLibrary {
-    pub fn as_library(&self, versions: &VersionedThirdPartyLibraries) -> Box<dyn Library> {
+    pub fn as_library(
+        &self,
+        target: LibraryTarget,
+        versions: &VersionedThirdPartyLibraries,
+    ) -> Box<dyn Library> {
         match self {
             ThirdPartyLibrary::Boxer => boxer().into(),
             ThirdPartyLibrary::Cairo => {
@@ -113,20 +117,22 @@ impl ThirdPartyLibrary {
                 libglutin(versions.version_of(ThirdPartyLibrary::Glutin)).into()
             }
             ThirdPartyLibrary::Process => {
-                libprocess(versions.version_of(ThirdPartyLibrary::Process)).into()
+                libprocess(Some(versions.version_of(ThirdPartyLibrary::Process))).into()
             }
             ThirdPartyLibrary::Sdl2 => {
                 libsdl2(versions.get_version_of(ThirdPartyLibrary::Sdl2)).into()
             }
-            ThirdPartyLibrary::Skia => libskia(versions.version_of(ThirdPartyLibrary::Skia)).into(),
+            ThirdPartyLibrary::Skia => {
+                libskia(target, Some(versions.version_of(ThirdPartyLibrary::Skia))).into()
+            }
             ThirdPartyLibrary::Ssl => {
                 libssl(versions.get_version_of(ThirdPartyLibrary::Ssl)).into()
             }
             ThirdPartyLibrary::Winit => {
-                libwinit(versions.version_of(ThirdPartyLibrary::Winit)).into()
+                libwinit(Some(versions.version_of(ThirdPartyLibrary::Winit))).into()
             }
             ThirdPartyLibrary::Pixels => {
-                libpixels(versions.version_of(ThirdPartyLibrary::Pixels)).into()
+                libpixels(Some(versions.version_of(ThirdPartyLibrary::Pixels))).into()
             }
             ThirdPartyLibrary::TestLibrary => test_library().into(),
         }

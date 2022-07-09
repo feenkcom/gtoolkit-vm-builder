@@ -2,8 +2,9 @@ use crate::{BuilderOptions, Executable, Platform, Target};
 use chrono::Utc;
 use feenk_releaser::{Version, VersionBump};
 use serde::{Deserialize, Serialize};
-use shared_library_builder::Library;
+use shared_library_builder::{Library, LibraryTarget};
 use std::path::{Path, PathBuf};
+use std::str::FromStr;
 
 const DEFAULT_BUILD_DIR: &str = "target";
 
@@ -105,11 +106,13 @@ impl ResolvedOptions {
                 .collect::<Vec<PathBuf>>()
         });
 
+        let library_target: LibraryTarget =
+            LibraryTarget::from_str(target.to_string().as_str()).unwrap();
         let libraries_versions = options.libraries_versions();
         let libraries = options.libraries().map_or(vec![], |libraries| {
             libraries
                 .iter()
-                .map(|each| each.as_library(&libraries_versions))
+                .map(|each| each.as_library(library_target, &libraries_versions))
                 .collect::<Vec<Box<dyn Library>>>()
         });
 

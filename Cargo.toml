@@ -32,7 +32,7 @@ pkg-config = "0.3"
 crossbeam = "0.8"
 git_info = "^0.1.2"
 chrono = "0.4"
-shared-library-builder = { git = "https://github.com/feenkcom/shared-library-builder-rs", features = [ "git-location" ] }
+shared-library-builder = { git = "https://github.com/feenkcom/shared-library-builder-rs", features = [ "git-location", "downloader" ] }
 libprocess-library = { git = "https://github.com/feenkcom/libprocess.git" }
 libglutin-library = { git = "https://github.com/feenkcom/libglutin.git" }
 libwinit-library = { git = "https://github.com/feenkcom/libwinit.git" }

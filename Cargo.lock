@@ -68,9 +68,9 @@ checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
 name = "backtrace"
-version = "0.3.65"
+version = "0.3.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "11a17d453482a265fd5f8479f2a3f405566e6ca627837aaddb85af8b1ab8ef61"
+checksum = "cab84319d616cfb654d03394f38ab7e6f0919e181b1b57e1fd15e7fb4077d9a7"
 dependencies = [
  "addr2line",
  "cc",
@@ -679,9 +679,9 @@ dependencies = [
 
 [[package]]
 name = "hashbrown"
-version = "0.12.1"
+version = "0.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db0d4cf898abf0081f964436dc980e96670a0f36863e4b83aaacdb65c9d7ccc3"
+checksum = "607c8a29735385251a339424dd462993c0fed8fa09d378f259377df08c126022"
 
 [[package]]
 name = "heck"
@@ -734,9 +734,9 @@ checksum = "c4a1e36c821dbe04574f602848a19f742f4fb3c98d40449f11bcad18d6b17421"
 
 [[package]]
 name = "hyper"
-version = "0.14.19"
+version = "0.14.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42dc3c131584288d375f2d07f822b0cb012d8c6fb899a5b9fdb3cb7eb9b6004f"
+checksum = "02c929dc5c39e335a03c405292728118860721b10190d98c2a0f0efd5baafbac"
 dependencies = [
  "bytes",
  "futures-channel",
@@ -939,7 +939,7 @@ dependencies = [
 [[package]]
 name = "libopenssl-library"
 version = "0.1.0"
-source = "git+https://github.com/feenkcom/libopenssl.git#36da703739529c6a059ac0d5dae9806f9d9721d8"
+source = "git+https://github.com/feenkcom/libopenssl.git#3bd2962930911dd461cfbdf9886f98a7033d41ac"
 dependencies = [
  "serde",
  "shared-library-builder",
@@ -950,7 +950,7 @@ dependencies = [
 [[package]]
 name = "libpixels-library"
 version = "0.1.0"
-source = "git+https://github.com/feenkcom/libpixels.git#893fae5ee7c0b5a5cf0dfe924d1dd5d1d61a0b1a"
+source = "git+https://github.com/feenkcom/libpixels.git#790d9062712560595ad0361cdcea82a96d733aa8"
 dependencies = [
  "shared-library-builder",
 ]
@@ -958,7 +958,7 @@ dependencies = [
 [[package]]
 name = "libprocess-library"
 version = "0.1.0"
-source = "git+https://github.com/feenkcom/libprocess.git#f327e9cb186be1582dae32dfd00160d3fd0518a6"
+source = "git+https://github.com/feenkcom/libprocess.git#09468098acacc61c4f65f90a035b8a8e97fd2d45"
 dependencies = [
  "shared-library-builder",
 ]
@@ -973,8 +973,8 @@ dependencies = [
 
 [[package]]
 name = "libskia-library"
-version = "0.1.0"
-source = "git+https://github.com/feenkcom/libskia.git#3a0e7f1c5fbc4f98a079fe85fcce5a6c56255cf2"
+version = "0.2.0"
+source = "git+https://github.com/feenkcom/libskia.git#30e6a44e30e62ef55a06d33daff85f3189dd8bd3"
 dependencies = [
  "shared-library-builder",
 ]
@@ -982,7 +982,7 @@ dependencies = [
 [[package]]
 name = "libwinit-library"
 version = "0.1.0"
-source = "git+https://github.com/feenkcom/libwinit.git#aa626067a3d208865da950e6037412a80b835ba1"
+source = "git+https://github.com/feenkcom/libwinit.git#fbdacfa67513936d39c150191cad07a259c95a37"
 dependencies = [
  "shared-library-builder",
 ]
@@ -1195,9 +1195,9 @@ dependencies = [
 
 [[package]]
 name = "object"
-version = "0.28.4"
+version = "0.29.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e42c982f2d955fac81dd7e1d0e1426a7d702acd9c98d19ab01083a6a0328c424"
+checksum = "21158b2c33aa6d4561f1c0a6ea283ca92bc54802a93b263e910746d679a7eb53"
 dependencies = [
  "memchr",
 ]
@@ -1225,15 +1225,15 @@ dependencies = [
 
 [[package]]
 name = "once_cell"
-version = "1.12.0"
+version = "1.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7709cef83f0c1f58f666e746a08b21e0085f7440fa6a29cc194d68aac97a4225"
+checksum = "18a6dbe30758c9f83eb00cbea4ac95966305f5a7772f3f42ebfc7fc7eddbd8e1"
 
 [[package]]
 name = "openssl"
-version = "0.10.40"
+version = "0.10.41"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb81a6430ac911acb25fe5ac8f1d2af1b4ea8a4fdfda0f1ee4292af2e2d8eb0e"
+checksum = "618febf65336490dfcf20b73f885f5651a0c89c64c2d4a8c3662585a70bf5bd0"
 dependencies = [
  "bitflags",
  "cfg-if",
@@ -1263,9 +1263,9 @@ checksum = "ff011a302c396a5197692431fc1948019154afc178baf7d8e37367442a4601cf"
 
 [[package]]
 name = "openssl-sys"
-version = "0.9.74"
+version = "0.9.75"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "835363342df5fba8354c5b453325b110ffd54044e588c539cf2f20a8014e4cb1"
+checksum = "e5f9bd0c2710541a3cda73d6f9ac4f1b240de4ae261065d309dbe73d9dceb42f"
 dependencies = [
  "autocfg",
  "cc",
@@ -1422,9 +1422,9 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.5.6"
+version = "1.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d83f127d94bdbcda4c8cc2e50f6f84f4b611f69c902699ca385a39c3a75f9ff1"
+checksum = "4c4eb3267174b8c6c2f654116623910a0fef09c4753f8dd83db29c48a0df988b"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -1433,9 +1433,9 @@ dependencies = [
 
 [[package]]
 name = "regex-syntax"
-version = "0.6.26"
+version = "0.6.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "49b3de9ec5dc0a3417da371aab17d729997c15010e7fd24ff707773a33bddb64"
+checksum = "a3f87b73ce11b1619a3c6332f45341e0047173771e8b8b73f87bfeefb7b56244"
 
 [[package]]
 name = "remove_dir_all"
@@ -1634,9 +1634,9 @@ dependencies = [
 
 [[package]]
 name = "serde_yaml"
-version = "0.8.24"
+version = "0.8.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "707d15895415db6628332b737c838b88c598522e4dc70647e59b72312924aebc"
+checksum = "1ec0091e1f5aa338283ce049bd9dfefd55e1f168ac233e85c1ffe0038fb48cbe"
 dependencies = [
  "indexmap",
  "ryu",
@@ -1646,9 +1646,10 @@ dependencies = [
 
 [[package]]
 name = "shared-library-builder"
-version = "0.3.1"
-source = "git+https://github.com/feenkcom/shared-library-builder-rs#1acb3c51a76c663efb209550844c1ae8fb6195bd"
+version = "0.3.8"
+source = "git+https://github.com/feenkcom/shared-library-builder-rs#adb91d35f834fa6fac3bb0a2defd6e1eb9685acb"
 dependencies = [
+ "clap",
  "cmake",
  "downloader",
  "file-matcher 0.7.0",
@@ -1657,6 +1658,7 @@ dependencies = [
  "pkg-config",
  "rustc_version 0.2.3",
  "serde",
+ "strum",
  "tar",
  "to_absolute",
  "typetag",
@@ -1724,6 +1726,28 @@ name = "strsim"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
+
+[[package]]
+name = "strum"
+version = "0.24.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "063e6045c0e62079840579a7e47a355ae92f60eb74daaf156fb1e84ba164e63f"
+dependencies = [
+ "strum_macros",
+]
+
+[[package]]
+name = "strum_macros"
+version = "0.24.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4faebde00e8ff94316c01800f9054fd2ba77d30d9e922541913051d1d978918b"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "rustversion",
+ "syn",
+]
 
 [[package]]
 name = "syn"
