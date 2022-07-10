@@ -119,7 +119,7 @@ pub trait Bundler: Debug + Send + Sync {
         LibraryCompilationContext::new(
             sources_directory,
             build_directory,
-            LibraryTarget::for_current_platform(),
+            LibraryTarget::try_from(options.target().to_string().as_str()).unwrap(),
             !options.release(),
         )
     }
