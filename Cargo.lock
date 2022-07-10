@@ -631,6 +631,7 @@ dependencies = [
  "fs_extra",
  "git_info",
  "libcairo-library",
+ "libclipboard-library",
  "libfreetype-library",
  "libgit2-library",
  "libgleam-library",
@@ -885,6 +886,14 @@ dependencies = [
  "typetag",
  "user-error",
  "which",
+]
+
+[[package]]
+name = "libclipboard-library"
+version = "0.1.0"
+source = "git+https://github.com/feenkcom/libclipboard.git#aab53797d5214b751f54d148c70f6b306ccadb3d"
+dependencies = [
+ "shared-library-builder",
 ]
 
 [[package]]

@@ -1,11 +1,9 @@
-use clap::ArgEnum;
-use serde::{Deserialize, Serialize};
-use shared_library_builder::{Library, LibraryTarget};
 use std::collections::HashMap;
 use std::str::FromStr;
 
-use crate::libraries::{boxer, clipboard, test_library};
+use clap::ArgEnum;
 use libcairo_library::libcairo;
+use libclipboard_library::libclipboard;
 use libfreetype_library::libfreetype;
 use libgit2_library::libgit2;
 use libgleam_library::libgleam;
@@ -16,6 +14,10 @@ use libprocess_library::libprocess;
 use libsdl2_library::libsdl2;
 use libskia_library::libskia;
 use libwinit_library::libwinit;
+use serde::{Deserialize, Serialize};
+use shared_library_builder::{Library, LibraryTarget};
+
+use crate::libraries::{boxer, clipboard, test_library};
 
 #[derive(ArgEnum, Copy, Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[repr(u32)]
@@ -100,7 +102,9 @@ impl ThirdPartyLibrary {
             ThirdPartyLibrary::Cairo => {
                 libcairo(versions.get_version_of(ThirdPartyLibrary::Cairo)).into()
             }
-            ThirdPartyLibrary::Clipboard => clipboard().into(),
+            ThirdPartyLibrary::Clipboard => {
+                libclipboard(Some(versions.version_of(ThirdPartyLibrary::Clipboard))).into()
+            }
             ThirdPartyLibrary::Crypto => {
                 libcrypto(versions.get_version_of(ThirdPartyLibrary::Crypto)).into()
             }
