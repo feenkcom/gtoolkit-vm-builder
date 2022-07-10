@@ -11,13 +11,6 @@ pub fn boxer() -> RustLibrary {
     )
 }
 
-pub fn clipboard() -> RustLibrary {
-    RustLibrary::new(
-        "Clipboard",
-        LibraryLocation::Git(GitLocation::github("feenkcom", "libclipboard")),
-    )
-}
-
 pub fn test_library() -> RustLibrary {
     RustLibrary::new(
         "TestLibrary",

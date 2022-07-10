@@ -17,7 +17,7 @@ use libwinit_library::libwinit;
 use serde::{Deserialize, Serialize};
 use shared_library_builder::{Library, LibraryTarget};
 
-use crate::libraries::{boxer, clipboard, test_library};
+use crate::libraries::{boxer, test_library};
 
 #[derive(ArgEnum, Copy, Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[repr(u32)]
