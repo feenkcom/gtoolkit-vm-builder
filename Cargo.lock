@@ -899,7 +899,7 @@ dependencies = [
 [[package]]
 name = "libfreetype-library"
 version = "0.1.0"
-source = "git+https://github.com/feenkcom/libfreetype.git#ee7ee01616170980e27460cb9e58ca187ddcba79"
+source = "git+https://github.com/feenkcom/libfreetype.git#969a70aaee5deb61343076e6fc73010b51a7eebf"
 dependencies = [
  "file-matcher 0.7.0",
  "shared-library-builder",
@@ -907,8 +907,8 @@ dependencies = [
 
 [[package]]
 name = "libgit2-library"
-version = "0.1.0"
-source = "git+https://github.com/feenkcom/libgit2.git#0e7f1f22dc9d996bd2266e2d4d40fdfff2a18658"
+version = "0.2.0"
+source = "git+https://github.com/feenkcom/libgit2.git#490907a548c1f865a8dca80dcaf4c359855abadc"
 dependencies = [
  "file-matcher 0.6.0",
  "libopenssl-library",
@@ -948,8 +948,9 @@ dependencies = [
 [[package]]
 name = "libopenssl-library"
 version = "0.1.0"
-source = "git+https://github.com/feenkcom/libopenssl.git#3bd2962930911dd461cfbdf9886f98a7033d41ac"
+source = "git+https://github.com/feenkcom/libopenssl.git#9969e82df1c3be74bc81ade10632e9450959ba33"
 dependencies = [
+ "cc",
  "serde",
  "shared-library-builder",
  "typetag",
@@ -1656,7 +1657,7 @@ dependencies = [
 [[package]]
 name = "shared-library-builder"
 version = "0.3.8"
-source = "git+https://github.com/feenkcom/shared-library-builder-rs#adb91d35f834fa6fac3bb0a2defd6e1eb9685acb"
+source = "git+https://github.com/feenkcom/shared-library-builder-rs#063237186cd5983179035bbda1d28b96fb829c95"
 dependencies = [
  "clap",
  "cmake",
