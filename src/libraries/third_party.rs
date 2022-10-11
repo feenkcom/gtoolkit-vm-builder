@@ -75,13 +75,17 @@ impl VersionedThirdPartyLibraries {
         self.get_version_of(library)
             .expect("Could not find a library version")
     }
+
+    pub fn set_version_of(&mut self, library: ThirdPartyLibrary, version: impl Into<String>) {
+        self.libraries.insert(library, version.into());
+    }
 }
 
 impl FromStr for ThirdPartyLibrary {
-    type Err = String;
+    type Err = crate::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        <ThirdPartyLibrary as ArgEnum>::from_str(s, true)
+        <ThirdPartyLibrary as ArgEnum>::from_str(s, true).map_err(|error| Self::Err::new(error))
     }
 }
 

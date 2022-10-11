@@ -5,6 +5,7 @@ use crate::Executable;
 use rustc_version::version_meta;
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
+use std::fmt::Debug;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
@@ -161,6 +162,9 @@ pub struct BuilderOptions {
     #[clap(long, parse(from_os_str))]
     /// A file that describes the versions of libraries
     libraries_versions: Option<PathBuf>,
+    #[clap(long, value_parser = parse_key_val::<ThirdPartyLibrary, String>, multiple_values = true)]
+    /// Override a library version specified in LIBRARY=version format. Multiple libraries are allowed.
+    override_library_version: Option<Vec<(ThirdPartyLibrary, String)>>,
     /// Use a specific VM to run a VMMaker, must be a path to the executable. When specified, the build will not attempt to download a VM
     #[clap(long, parse(from_os_str))]
     #[serde(skip)]
@@ -248,7 +252,7 @@ impl BuilderOptions {
     }
 
     pub fn libraries_versions(&self) -> VersionedThirdPartyLibraries {
-        match &self.libraries_versions {
+        let mut versioned_libraries = match &self.libraries_versions {
             None => VersionedThirdPartyLibraries::new(),
             Some(versions_file) => serde_json::from_str(
                 fs::read_to_string(versions_file)
@@ -256,10 +260,35 @@ impl BuilderOptions {
                     .as_str(),
             )
             .expect("Failed to deserialized versions"),
+        };
+
+        if let Some(ref overridden_versions) = self.override_library_version {
+            for (library, version) in overridden_versions {
+                versioned_libraries.set_version_of(library.clone(), version);
+            }
         }
+
+        versioned_libraries
     }
 
     pub fn executables(&self) -> Option<&Vec<Executable>> {
         self.executables.as_ref()
     }
+}
+
+/// Parse a single key-value pair
+fn parse_key_val<T, U>(
+    s: &str,
+) -> Result<(T, U), Box<dyn std::error::Error + Send + Sync + 'static>>
+where
+    T: std::str::FromStr + Debug,
+    T::Err: std::error::Error + Send + Sync + 'static,
+    U: std::str::FromStr + Debug,
+    U::Err: std::error::Error + Send + Sync + 'static,
+{
+    let pos = s
+        .find('=')
+        .ok_or_else(|| format!("invalid KEY=value: no `=` found in `{}`", s))?;
+
+    Ok((s[..pos].parse()?, s[pos + 1..].parse()?))
 }

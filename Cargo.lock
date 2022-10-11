@@ -616,7 +616,7 @@ checksum = "641b847f0375f4b2c595438eefc17a9c0fbf47b400cbdd1ad9332bf1e16b779d"
 
 [[package]]
 name = "gtoolkit-vm-builder"
-version = "0.43.0"
+version = "0.46.0"
 dependencies = [
  "anyhow",
  "cc",

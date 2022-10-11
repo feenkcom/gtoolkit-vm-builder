@@ -1,6 +1,6 @@
 [package]
 name = "gtoolkit-vm-builder"
-version = "0.43.0"
+version = "0.46.0"
 authors = ["feenk gmbh <contact@feenk.com>"]
 edition = "2021"
 build = "build.rs"
