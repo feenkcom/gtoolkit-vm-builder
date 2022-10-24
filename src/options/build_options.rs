@@ -1,15 +1,16 @@
-use clap::{ArgEnum, Parser};
-
-use crate::libraries::{ThirdPartyLibrary, VersionedThirdPartyLibraries};
-use crate::Executable;
-use rustc_version::version_meta;
-use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 use std::fmt::Debug;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::str::FromStr;
+
+use clap::{ArgEnum, Parser};
+use rustc_version::version_meta;
+use serde::{Deserialize, Serialize};
+
+use crate::Executable;
+use crate::libraries::{ThirdPartyLibrary, VersionedThirdPartyLibraries};
 
 #[derive(ArgEnum, Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(try_from = "String", into = "String")]
@@ -281,9 +282,9 @@ fn parse_key_val<T, U>(
     s: &str,
 ) -> Result<(T, U), Box<dyn std::error::Error + Send + Sync + 'static>>
 where
-    T: std::str::FromStr + Debug,
+    T: FromStr + Debug,
     T::Err: std::error::Error + Send + Sync + 'static,
-    U: std::str::FromStr + Debug,
+    U: FromStr + Debug,
     U::Err: std::error::Error + Send + Sync + 'static,
 {
     let pos = s

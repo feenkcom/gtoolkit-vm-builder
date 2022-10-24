@@ -35,6 +35,8 @@ pub trait Bundler: Debug + Send + Sync {
             std::env::set_var("VM_CLIENT_VMMAKER_IMAGE", vmmaker_image);
         }
 
+        std::env::set_var("VM_CLIENT_VERSION", options.version().to_string());
+
         let mut command = Command::new("cargo");
         command
             .arg("build")
