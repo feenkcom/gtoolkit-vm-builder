@@ -33,6 +33,7 @@ crossbeam = "0.8"
 git_info = "^0.1.2"
 chrono = "0.4"
 shared-library-builder = { git = "https://github.com/feenkcom/shared-library-builder-rs", features = [ "git-location", "downloader" ] }
+libboxer-library = { git = "https://github.com/feenkcom/libboxer.git" }
 libprocess-library = { git = "https://github.com/feenkcom/libprocess.git" }
 libclipboard-library = { git = "https://github.com/feenkcom/libclipboard.git" }
 libglutin-library = { git = "https://github.com/feenkcom/libglutin.git" }

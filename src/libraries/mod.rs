@@ -2,14 +2,7 @@ mod third_party;
 
 pub use third_party::{ThirdPartyLibrary, VersionedThirdPartyLibraries};
 
-use shared_library_builder::{GitLocation, LibraryLocation, PathLocation, RustLibrary};
-
-pub fn boxer() -> RustLibrary {
-    RustLibrary::new(
-        "Boxer",
-        LibraryLocation::Git(GitLocation::github("feenkcom", "gtoolkit-boxer")),
-    )
-}
+use shared_library_builder::{LibraryLocation, PathLocation, RustLibrary};
 
 pub fn test_library() -> RustLibrary {
     RustLibrary::new(

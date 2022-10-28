@@ -630,6 +630,7 @@ dependencies = [
  "flate2",
  "fs_extra",
  "git_info",
+ "libboxer-library",
  "libcairo-library",
  "libclipboard-library",
  "libfreetype-library",
@@ -867,6 +868,14 @@ name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
+
+[[package]]
+name = "libboxer-library"
+version = "0.1.0"
+source = "git+https://github.com/feenkcom/libboxer.git#5b3ed38224c3e6bf1366b72bb27eb4d1a6f279fa"
+dependencies = [
+ "shared-library-builder",
+]
 
 [[package]]
 name = "libc"

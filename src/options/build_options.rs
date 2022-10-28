@@ -9,8 +9,8 @@ use clap::{ArgEnum, Parser};
 use rustc_version::version_meta;
 use serde::{Deserialize, Serialize};
 
-use crate::Executable;
 use crate::libraries::{ThirdPartyLibrary, VersionedThirdPartyLibraries};
+use crate::Executable;
 
 #[derive(ArgEnum, Copy, Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(try_from = "String", into = "String")]

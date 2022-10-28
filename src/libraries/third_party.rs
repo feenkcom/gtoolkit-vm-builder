@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::str::FromStr;
 
 use clap::ArgEnum;
+use libboxer_library::libboxer;
 use libcairo_library::libcairo;
 use libclipboard_library::libclipboard;
 use libfreetype_library::libfreetype;
@@ -17,7 +18,7 @@ use libwinit_library::libwinit;
 use serde::{Deserialize, Serialize};
 use shared_library_builder::{Library, LibraryTarget};
 
-use crate::libraries::{boxer, test_library};
+use crate::libraries::test_library;
 
 #[derive(ArgEnum, Copy, Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[repr(u32)]
@@ -102,7 +103,9 @@ impl ThirdPartyLibrary {
         versions: &VersionedThirdPartyLibraries,
     ) -> Box<dyn Library> {
         match self {
-            ThirdPartyLibrary::Boxer => boxer().into(),
+            ThirdPartyLibrary::Boxer => {
+                libboxer(versions.get_version_of(ThirdPartyLibrary::Boxer)).into()
+            }
             ThirdPartyLibrary::Cairo => {
                 libcairo(versions.get_version_of(ThirdPartyLibrary::Cairo)).into()
             }
