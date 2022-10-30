@@ -122,7 +122,7 @@ impl ThirdPartyLibrary {
                 libgit2(versions.get_version_of(ThirdPartyLibrary::Git)).into()
             }
             ThirdPartyLibrary::Gleam => {
-                libgleam(versions.version_of(ThirdPartyLibrary::Gleam)).into()
+                libgleam(versions.get_version_of(ThirdPartyLibrary::Gleam)).into()
             }
             ThirdPartyLibrary::Glutin => {
                 libglutin(versions.version_of(ThirdPartyLibrary::Glutin)).into()
