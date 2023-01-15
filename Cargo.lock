@@ -709,6 +709,7 @@ dependencies = [
  "libgleam-library",
  "libglutin-library",
  "libopenssl-library",
+ "libphlow-builder",
  "libpixels-library",
  "libprocess-library",
  "libsdl2-library",
@@ -1059,6 +1060,14 @@ dependencies = [
  "shared-library-builder",
  "typetag",
  "which",
+]
+
+[[package]]
+name = "libphlow-builder"
+version = "0.1.0"
+source = "git+https://github.com/feenkcom/libphlow.git#e45e07785c50ce3ad8293860f0c75495994778bd"
+dependencies = [
+ "shared-library-builder",
 ]
 
 [[package]]

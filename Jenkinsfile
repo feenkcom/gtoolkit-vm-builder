@@ -12,7 +12,6 @@ pipeline {
         choice(name: 'BUMP', choices: [ 'minor', 'patch', 'major' ], description: 'What to bump when releasing') }
     environment {
         GITHUB_TOKEN = credentials('githubrelease')
-        AWSIP = 'ec2-18-197-145-81.eu-central-1.compute.amazonaws.com'
 
         TOOL_NAME = 'gtoolkit-vm-builder'
         REPOSITORY_OWNER = 'feenkcom'
@@ -213,6 +212,7 @@ pipeline {
                     --owner feenkcom \
                     --repo ${REPOSITORY_NAME} \
                     --token GITHUB_TOKEN \
+                    release \
                     --bump ${params.BUMP} \
                     --auto-accept \
                     --assets \

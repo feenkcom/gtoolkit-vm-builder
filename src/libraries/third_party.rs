@@ -10,6 +10,7 @@ use libgit2_library::libgit2;
 use libgleam_library::libgleam;
 use libglutin_library::libglutin;
 use libopenssl_library::{libcrypto, libssl};
+use libphlow_builder::libphlow;
 use libpixels_library::libpixels;
 use libprocess_library::libprocess;
 use libsdl2_library::libsdl2;
@@ -51,6 +52,8 @@ pub enum ThirdPartyLibrary {
     Clipboard,
     #[clap(name = "process")]
     Process,
+    #[clap(name = "phlow")]
+    Phlow,
     #[clap(name = "test-library")]
     TestLibrary,
 }
@@ -144,6 +147,9 @@ impl ThirdPartyLibrary {
             }
             ThirdPartyLibrary::Pixels => {
                 libpixels(Some(versions.version_of(ThirdPartyLibrary::Pixels))).into()
+            }
+            ThirdPartyLibrary::Phlow => {
+                libphlow(Some(versions.version_of(ThirdPartyLibrary::Phlow))).into()
             }
             ThirdPartyLibrary::TestLibrary => test_library().into(),
         }

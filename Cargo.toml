@@ -46,6 +46,7 @@ libopenssl-library = { git = "https://github.com/feenkcom/libopenssl.git" }
 libfreetype-library = { git = "https://github.com/feenkcom/libfreetype.git" }
 libcairo-library = { git = "https://github.com/feenkcom/libcairo.git" }
 libgit2-library = { git = "https://github.com/feenkcom/libgit2.git" }
+libphlow-builder = { git = "https://github.com/feenkcom/libphlow.git" }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 mach_object = "0.1"
