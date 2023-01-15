@@ -27,7 +27,7 @@ chmod +x gtoolkit-vm-builder
     --identifier 'com.gtoolkit' \
     --author "feenk gmbh <contact@feenk.com>" \
     --libraries-versions libraries.version \
-    --libraries boxer cairo clipboard crypto freetype git gleam glutin process sdl2 skia winit pixels test-library
+    --libraries boxer cairo clipboard crypto freetype git gleam glutin phlow pixels process sdl2 skia winit test-library
 ```
 
 The resulting bundle will be created in the `target/${TARGET}/release/bundle` folder
