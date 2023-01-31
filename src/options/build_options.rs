@@ -26,6 +26,8 @@ pub enum Target {
     AArch64pcWindowsMsvc,
     #[clap(name = "x86_64-unknown-linux-gnu")]
     X8664UnknownlinuxGNU,
+    #[clap(name = "aarch64-unknown-linux-gnu")]
+    AArch64UnknownlinuxGNU,
 }
 
 impl Target {
@@ -40,6 +42,7 @@ impl Target {
             Target::X8664pcWindowsMsvc => Platform::Windows,
             Target::AArch64pcWindowsMsvc => Platform::Windows,
             Target::X8664UnknownlinuxGNU => Platform::Linux,
+            Target::AArch64UnknownlinuxGNU => Platform::Linux
         }
     }
 
