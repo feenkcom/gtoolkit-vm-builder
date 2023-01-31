@@ -39,8 +39,13 @@ impl MacBundler {
         Ok(())
     }
 
+    #[cfg(not(target_os = "macos"))]
+    pub fn set_rpath_to(_filename: impl AsRef<Path>, _path: impl AsRef<str>) -> Result<()> {
+        Ok(())
+    }
+
     #[cfg(target_os = "macos")]
-    fn set_rpath(filename: impl AsRef<Path>) -> Result<()> {
+    pub fn set_rpath_to(filename: impl AsRef<Path>, path: impl AsRef<str>) -> Result<()> {
         let file = File::open(filename.as_ref())?;
         let mmap = unsafe { memmap::Mmap::map(&file) }?;
         let payload = mmap.as_ref();
@@ -56,7 +61,7 @@ impl MacBundler {
             } => {
                 if !Command::new("install_name_tool")
                     .arg("-add_rpath")
-                    .arg("@executable_path/Plugins")
+                    .arg(format!("@executable_path/{}", path.as_ref()))
                     .arg(&filename.as_ref())
                     .status()?
                     .success()
@@ -86,7 +91,7 @@ impl MacBundler {
                                     .unwrap()
                                     .to_str()
                                     .unwrap();
-                                let new_path = format!("@executable_path/Plugins/{}", &file_name);
+                                let new_path = format!("@executable_path/{}/{}", path.as_ref(), &file_name);
 
                                 if command.cmd() == LC_ID_DYLIB {
                                     if !Command::new("install_name_tool")
@@ -142,6 +147,11 @@ impl MacBundler {
         };
 
         Ok(())
+    }
+
+    #[cfg(target_os = "macos")]
+    fn set_rpath(filename: impl AsRef<Path>) -> Result<()> {
+        Self::set_rpath_to(filename, "Plugins")
     }
 }
 

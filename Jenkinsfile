@@ -25,8 +25,10 @@ pipeline {
         WINDOWS_ARM64_SERVER_NAME = 'bugs-bunny'
         WINDOWS_ARM64_TARGET = 'aarch64-pc-windows-msvc'
 
-        LINUX_SERVER_NAME = 'mickey-mouse'
+        LINUX_AMD64_SERVER_NAME = 'mickey-mouse'
         LINUX_AMD64_TARGET = 'x86_64-unknown-linux-gnu'
+        LINUX_ARM64_SERVER_NAME = 'peter-pan'
+        LINUX_ARM64_TARGET = 'aarch64-unknown-linux-gnu'
     }
 
     stages {
@@ -91,13 +93,30 @@ pipeline {
 
                 stage ('Linux x86_64') {
                     agent {
-                        label "${LINUX_AMD64_TARGET}-${LINUX_SERVER_NAME}"
+                        label "${LINUX_AMD64_TARGET}-${LINUX_AMD64_SERVER_NAME}"
                     }
                     environment {
                         TARGET = "${LINUX_AMD64_TARGET}"
                         PATH = "$HOME/.cargo/bin:$PATH"
                     }
+                    steps {
+                        sh 'git clean -fdx'
+                        sh "cargo build --bin ${TOOL_NAME} --release"
 
+                        sh "mv target/release/${TOOL_NAME} ${TOOL_NAME}-${TARGET}"
+
+                        stash includes: "${TOOL_NAME}-${TARGET}", name: "${TARGET}"
+                    }
+                }
+
+                stage ('Linux arm64') {
+                    agent {
+                        label "${LINUX_ARM64_TARGET}-${LINUX_ARM64_SERVER_NAME}"
+                    }
+                    environment {
+                        TARGET = "${LINUX_ARM64_TARGET}"
+                        PATH = "$HOME/.cargo/bin:$PATH"
+                    }
                     steps {
                         sh 'git clean -fdx'
                         sh "cargo build --bin ${TOOL_NAME} --release"
@@ -199,6 +218,7 @@ pipeline {
             }
             steps {
                 unstash "${LINUX_AMD64_TARGET}"
+                unstash "${LINUX_ARM64_TARGET}"
                 unstash "${MACOS_INTEL_TARGET}"
                 unstash "${MACOS_M1_TARGET}"
                 unstash "${WINDOWS_AMD64_TARGET}"
@@ -217,6 +237,7 @@ pipeline {
                     --auto-accept \
                     --assets \
                         ${TOOL_NAME}-${LINUX_AMD64_TARGET} \
+                        ${TOOL_NAME}-${LINUX_ARM64_TARGET} \
                         ${TOOL_NAME}-${MACOS_INTEL_TARGET} \
                         ${TOOL_NAME}-${MACOS_M1_TARGET} \
                         ${TOOL_NAME}-${WINDOWS_AMD64_TARGET}.exe \

@@ -9,6 +9,10 @@ build = "build.rs"
 name = "gtoolkit-vm-builder"
 path = "src/main.rs"
 
+[[bin]]
+name = "rpath"
+path = "src/main_rpath.rs"
+
 [dependencies]
 clap = { version = "3", features = [ "derive", "color" ] }
 fs_extra = "1.1"
