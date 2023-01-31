@@ -128,7 +128,7 @@ impl ThirdPartyLibrary {
                 libgleam(versions.get_version_of(ThirdPartyLibrary::Gleam)).into()
             }
             ThirdPartyLibrary::Glutin => {
-                libglutin(versions.version_of(ThirdPartyLibrary::Glutin)).into()
+                libglutin(versions.get_version_of(ThirdPartyLibrary::Glutin)).into()
             }
             ThirdPartyLibrary::Process => {
                 libprocess(Some(versions.version_of(ThirdPartyLibrary::Process))).into()
