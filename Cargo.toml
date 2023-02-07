@@ -39,7 +39,7 @@ chrono = "0.4"
 shared-library-builder = { git = "https://github.com/feenkcom/shared-library-builder-rs", features = [ "git-location", "downloader" ] }
 libboxer-library = { git = "https://github.com/feenkcom/libboxer.git" }
 libprocess-library = { git = "https://github.com/feenkcom/libprocess.git" }
-libclipboard-library = { git = "https://github.com/feenkcom/libclipboard.git" }
+libclipboard-builder = { git = "https://github.com/feenkcom/libclipboard.git" }
 libglutin-library = { git = "https://github.com/feenkcom/libglutin.git" }
 libwinit-library = { git = "https://github.com/feenkcom/libwinit.git" }
 libgleam-library = { git = "https://github.com/feenkcom/libgleam.git" }
@@ -50,7 +50,6 @@ libopenssl-library = { git = "https://github.com/feenkcom/libopenssl.git" }
 libfreetype-library = { git = "https://github.com/feenkcom/libfreetype.git" }
 libcairo-library = { git = "https://github.com/feenkcom/libcairo.git" }
 libgit2-library = { git = "https://github.com/feenkcom/libgit2.git" }
-libphlow-builder = { git = "https://github.com/feenkcom/libphlow.git" }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 mach_object = "0.1"

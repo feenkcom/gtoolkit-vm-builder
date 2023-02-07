@@ -709,13 +709,12 @@ dependencies = [
  "git_info",
  "libboxer-library",
  "libcairo-library",
- "libclipboard-library",
+ "libclipboard-builder",
  "libfreetype-library",
  "libgit2-library",
  "libgleam-library",
  "libglutin-library",
  "libopenssl-library",
- "libphlow-builder",
  "libpixels-library",
  "libprocess-library",
  "libsdl2-library",
@@ -1009,9 +1008,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "libclipboard-library"
-version = "0.1.0"
-source = "git+https://github.com/feenkcom/libclipboard.git#fedfb454c852e667acbca1a9b2d2f23dd0f86e04"
+name = "libclipboard-builder"
+version = "0.2.0"
+source = "git+https://github.com/feenkcom/libclipboard.git#f10d2bd346f5741ca0ced9927d9daedc786fba6d"
 dependencies = [
  "shared-library-builder",
 ]
@@ -1075,14 +1074,6 @@ dependencies = [
  "shared-library-builder",
  "typetag",
  "which",
-]
-
-[[package]]
-name = "libphlow-builder"
-version = "0.1.0"
-source = "git+https://github.com/feenkcom/libphlow.git#a252b306c69cdc8ec684ffc010c095a973612ffe"
-dependencies = [
- "shared-library-builder",
 ]
 
 [[package]]
