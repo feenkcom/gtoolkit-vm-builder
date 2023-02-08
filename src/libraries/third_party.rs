@@ -11,7 +11,7 @@ use libgleam_library::libgleam;
 use libglutin_library::libglutin;
 use libopenssl_library::{libcrypto, libssl};
 use libpixels_library::libpixels;
-use libprocess_library::libprocess;
+use libprocess_builder::libprocess;
 use libsdl2_library::libsdl2;
 use libskia_library::libskia;
 use libwinit_library::libwinit;

@@ -38,7 +38,7 @@ git_info = "^0.1.2"
 chrono = "0.4"
 shared-library-builder = { git = "https://github.com/feenkcom/shared-library-builder-rs", features = [ "git-location", "downloader" ] }
 libboxer-library = { git = "https://github.com/feenkcom/libboxer.git" }
-libprocess-library = { git = "https://github.com/feenkcom/libprocess.git" }
+libprocess-builder = { git = "https://github.com/feenkcom/libprocess.git" }
 libclipboard-builder = { git = "https://github.com/feenkcom/libclipboard.git" }
 libglutin-library = { git = "https://github.com/feenkcom/libglutin.git" }
 libwinit-library = { git = "https://github.com/feenkcom/libwinit.git" }

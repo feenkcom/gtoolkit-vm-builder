@@ -716,7 +716,7 @@ dependencies = [
  "libglutin-library",
  "libopenssl-library",
  "libpixels-library",
- "libprocess-library",
+ "libprocess-builder",
  "libsdl2-library",
  "libskia-library",
  "libwinit-library",
@@ -1085,9 +1085,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "libprocess-library"
-version = "0.1.0"
-source = "git+https://github.com/feenkcom/libprocess.git#2196793f094554b175b4faef7f3a2af45ec2d5c3"
+name = "libprocess-builder"
+version = "0.2.0"
+source = "git+https://github.com/feenkcom/libprocess.git#088d8fee616530a6178076243f3b9c0eaa2963dc"
 dependencies = [
  "shared-library-builder",
 ]
