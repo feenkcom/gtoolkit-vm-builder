@@ -1,6 +1,6 @@
 [package]
 name = "gtoolkit-vm-builder"
-version = "0.46.0"
+version = "0.60.0"
 authors = ["feenk gmbh <contact@feenk.com>"]
 edition = "2021"
 build = "build.rs"
@@ -16,11 +16,11 @@ path = "src/main_rpath.rs"
 [dependencies]
 clap = { version = "3", features = [ "derive", "color" ] }
 fs_extra = "1.1"
-rustc_version = "0.2"
+rustc_version = "0.4"
 mustache = "0.9"
 serde = { version = "1.0", features = [ "derive" ]}
 serde_json = "1.0"
-serde_yaml = "0.8"
+serde_yaml = "0.9"
 url = "2.2"
 which = "4.1"
 user-error = "1.2"
@@ -31,7 +31,7 @@ tar = "0.4"
 flate2 = "1.0"
 xz2 = "0.1"
 downloader = "0.2"
-file-matcher = "0.6"
+file-matcher = "0.7"
 pkg-config = "0.3"
 crossbeam = "0.8"
 git_info = "^0.1.2"
@@ -45,7 +45,7 @@ libwinit-library = { git = "https://github.com/feenkcom/libwinit.git" }
 libgleam-library = { git = "https://github.com/feenkcom/libgleam.git" }
 libskia-library = { git = "https://github.com/feenkcom/libskia.git" }
 libsdl2-library = { git = "https://github.com/feenkcom/libsdl2.git" }
-libpixels-library = { git = "https://github.com/feenkcom/libpixels.git" }
+libpixels-builder = { git = "https://github.com/feenkcom/libpixels.git" }
 libopenssl-library = { git = "https://github.com/feenkcom/libopenssl.git" }
 libfreetype-library = { git = "https://github.com/feenkcom/libfreetype.git" }
 libcairo-library = { git = "https://github.com/feenkcom/libcairo.git" }
@@ -59,5 +59,5 @@ memmap = "0.7"
 #shared-library-builder = { path = "../shared-library-builder-rs" }
 
 [build-dependencies]
-vergen = "5"
+vergen = "7"
 anyhow = "1"

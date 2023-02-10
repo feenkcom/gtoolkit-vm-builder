@@ -10,7 +10,7 @@ use libgit2_library::libgit2;
 use libgleam_library::libgleam;
 use libglutin_library::libglutin;
 use libopenssl_library::{libcrypto, libssl};
-use libpixels_library::libpixels;
+use libpixels_builder::libpixels;
 use libprocess_builder::libprocess;
 use libsdl2_library::libsdl2;
 use libskia_library::libskia;
