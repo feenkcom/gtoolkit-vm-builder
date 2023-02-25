@@ -129,10 +129,14 @@ pub trait Bundler: Debug + Send + Sync {
     fn compile_library(&self, library: &Box<dyn Library>, options: &BundleOptions) -> Result<()> {
         let context = self.new_library_compilation_context(library, options);
         let compiled_library = library.compile(&context)?;
+        let library_target =
+            LibraryTarget::try_from(options.target().to_string().as_str()).unwrap();
 
-        let library_path = self
-            .compiled_libraries_directory(options)
-            .join(library.compiled_library_name().file_name(library.name()));
+        let library_path = self.compiled_libraries_directory(options).join(
+            library
+                .compiled_library_name()
+                .file_name(library.name(), &library_target),
+        );
 
         std::fs::copy(&compiled_library, &library_path).map_err(|error| {
             Error::new(format!(

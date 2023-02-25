@@ -13,8 +13,8 @@ use libopenssl_library::{libcrypto, libssl};
 use libpixels_builder::libpixels;
 use libprocess_builder::libprocess;
 use libsdl2_library::libsdl2;
-use libskia_library::libskia;
-use libwinit_library::libwinit;
+use libskia_builder::libskia;
+use libwinit_builder::libwinit;
 use serde::{Deserialize, Serialize};
 use shared_library_builder::{Library, LibraryTarget};
 

@@ -1,6 +1,6 @@
 [package]
 name = "gtoolkit-vm-builder"
-version = "0.60.0"
+version = "0.61.0"
 authors = ["feenk gmbh <contact@feenk.com>"]
 edition = "2021"
 build = "build.rs"
@@ -41,9 +41,9 @@ libboxer-library = { git = "https://github.com/feenkcom/libboxer.git" }
 libprocess-builder = { git = "https://github.com/feenkcom/libprocess.git" }
 libclipboard-builder = { git = "https://github.com/feenkcom/libclipboard.git" }
 libglutin-library = { git = "https://github.com/feenkcom/libglutin.git" }
-libwinit-library = { git = "https://github.com/feenkcom/libwinit.git" }
+libwinit-builder = { git = "https://github.com/feenkcom/libwinit.git" }
 libgleam-library = { git = "https://github.com/feenkcom/libgleam.git" }
-libskia-library = { git = "https://github.com/feenkcom/libskia.git" }
+libskia-builder = { git = "https://github.com/feenkcom/libskia.git" }
 libsdl2-library = { git = "https://github.com/feenkcom/libsdl2.git" }
 libpixels-builder = { git = "https://github.com/feenkcom/libpixels.git" }
 libopenssl-library = { git = "https://github.com/feenkcom/libopenssl.git" }
