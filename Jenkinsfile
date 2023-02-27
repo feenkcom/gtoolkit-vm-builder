@@ -141,7 +141,7 @@ pipeline {
 
                     steps {
                         powershell "cargo build --bin ${TOOL_NAME} --release"
-                        powershell "Move-Item -Path target/release/${TOOL_NAME}.exe -Destination ${TOOL_NAME}-${TARGET}.exe"
+                        powershell "Move-Item -Force -Path target/release/${TOOL_NAME}.exe -Destination ${TOOL_NAME}-${TARGET}.exe"
                         stash includes: "${TOOL_NAME}-${TARGET}.exe", name: "${TARGET}"
                     }
                 }
@@ -164,7 +164,7 @@ pipeline {
 
                     steps {
                         powershell "cargo build --bin ${TOOL_NAME} --release --target ${TARGET}"
-                        powershell "Move-Item -Path target/${TARGET}/release/${TOOL_NAME}.exe -Destination ${TOOL_NAME}-${TARGET}.exe"
+                        powershell "Move-Item -Force -Path target/${TARGET}/release/${TOOL_NAME}.exe -Destination ${TOOL_NAME}-${TARGET}.exe"
                         stash includes: "${TOOL_NAME}-${TARGET}.exe", name: "${TARGET}"
                     }
                 }
