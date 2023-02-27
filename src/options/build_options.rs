@@ -28,6 +28,8 @@ pub enum Target {
     X8664UnknownlinuxGNU,
     #[clap(name = "aarch64-unknown-linux-gnu")]
     AArch64UnknownlinuxGNU,
+    #[clap(name = "aarch64-linux-android")]
+    AArch64LinuxAndroid,
 }
 
 impl Target {
@@ -42,7 +44,8 @@ impl Target {
             Target::X8664pcWindowsMsvc => Platform::Windows,
             Target::AArch64pcWindowsMsvc => Platform::Windows,
             Target::X8664UnknownlinuxGNU => Platform::Linux,
-            Target::AArch64UnknownlinuxGNU => Platform::Linux
+            Target::AArch64UnknownlinuxGNU => Platform::Linux,
+            Target::AArch64LinuxAndroid => Platform::Android,
         }
     }
 
@@ -100,21 +103,23 @@ pub enum Platform {
     Mac,
     Windows,
     Linux,
+    Android,
 }
 
 impl Platform {
     pub fn is_unix(&self) -> bool {
         match self {
-            Platform::Mac | Platform::Linux => true,
+            Platform::Mac | Platform::Linux | Platform::Android => true,
             Platform::Windows => false,
         }
     }
 
     pub fn is_windows(&self) -> bool {
-        match self {
-            Platform::Mac | Platform::Linux => false,
-            Platform::Windows => true,
-        }
+        self == &Self::Windows
+    }
+
+    pub fn is_android(&self) -> bool {
+        self == &Self::Android
     }
 }
 

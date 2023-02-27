@@ -15,22 +15,24 @@ extern crate user_error;
 extern crate which;
 extern crate xz2;
 
-mod bundlers;
-mod error;
-mod libraries;
-mod options;
+use std::io::Write;
+
+use clap::Parser;
 
 pub use error::*;
 pub use options::*;
 
-use clap::Parser;
-use std::io::Write;
-
+use crate::bundlers::android::AndroidBundler;
+use crate::bundlers::Bundler;
 use crate::bundlers::linux::LinuxBundler;
 use crate::bundlers::mac::MacBundler;
 use crate::bundlers::windows::WindowsBundler;
-use crate::bundlers::Bundler;
 use crate::options::{BuilderOptions, BundleOptions, Executable, Target};
+
+mod bundlers;
+mod error;
+mod libraries;
+mod options;
 
 fn main() -> Result<()> {
     let build_options: BuilderOptions = BuilderOptions::parse();
@@ -89,5 +91,6 @@ fn bundler(options: &ResolvedOptions) -> Box<dyn Bundler> {
         Platform::Mac => Box::new(MacBundler::new()),
         Platform::Windows => Box::new(WindowsBundler::new()),
         Platform::Linux => Box::new(LinuxBundler::new()),
+        Platform::Android => Box::new(AndroidBundler::new()),
     }
 }

@@ -4,25 +4,52 @@ use feenk_releaser::Version;
 use serde::{Deserialize, Serialize};
 use shared_library_builder::Library;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
-#[derive(ArgEnum, Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(ArgEnum, Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq)]
 pub enum Executable {
     App,
     Cli,
+    Android,
 }
 
 impl Executable {
+    pub fn cargo_build_command(&self) -> Command {
+        let mut command = Command::new("cargo");
+        if self == &Self::Android {
+            command.arg("apk").arg("--");
+        };
+
+        command
+            .arg("build")
+            .arg("--package")
+            .arg(self.cargo_package_name());
+
+        command
+    }
+
+    /// Return the name of a package to be built depending on the executable type
+    pub fn cargo_package_name(&self) -> &str {
+        match self {
+            Executable::App => "vm-client-desktop",
+            Executable::Cli => "vm-client-desktop-cli",
+            Executable::Android => "vm-client-android",
+        }
+    }
+
     pub fn cargo_bin_name(&self) -> &str {
         match self {
             Executable::App => "vm_client",
             Executable::Cli => "vm_client-cli",
+            Executable::Android => "libvm_client_android",
         }
     }
 
+    /// Return the name of the main compiled binary as it appears in the release/debug folder
     pub fn compiled_name(&self, options: &ResolvedOptions) -> String {
         let mut executable_name = self.cargo_bin_name().to_owned();
 
-        if let Some(extension) = options.executable_extension() {
+        if let Some(extension) = options.executable_artefact_extension() {
             executable_name = format!("{}.{}", &executable_name, &extension);
         };
         executable_name
@@ -34,9 +61,12 @@ impl Executable {
             Executable::Cli => {
                 format!("{}-cli", options.executable_name())
             }
+            Executable::Android => {
+                format!("lib{}", options.executable_name())
+            }
         };
 
-        if let Some(extension) = options.executable_extension() {
+        if let Some(extension) = options.executable_artefact_extension() {
             executable_name = format!("{}.{}", &executable_name, &extension);
         };
         executable_name

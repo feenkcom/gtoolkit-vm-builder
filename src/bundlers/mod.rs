@@ -1,15 +1,16 @@
-use crate::options::BundleOptions;
+use std::fmt::Debug;
 use std::path::{Path, PathBuf};
 
+use shared_library_builder::{Library, LibraryCompilationContext, LibraryTarget};
+
+use crate::options::BundleOptions;
+use crate::{Error, Platform, Result};
+use crate::{Executable, ExecutableOptions};
+
+pub mod android;
 pub mod linux;
 pub mod mac;
 pub mod windows;
-
-use crate::{Error, Platform, Result};
-use crate::{Executable, ExecutableOptions};
-use shared_library_builder::{Library, LibraryCompilationContext, LibraryTarget};
-use std::fmt::Debug;
-use std::process::Command;
 
 pub trait Bundler: Debug + Send + Sync {
     fn pre_compile(&self, _options: &ExecutableOptions) {}
@@ -37,13 +38,7 @@ pub trait Bundler: Debug + Send + Sync {
 
         std::env::set_var("VM_CLIENT_VERSION", options.version().to_string());
 
-        let mut command = Command::new("cargo");
-        command
-            .arg("build")
-            .arg("--package")
-            .arg("vm-client")
-            .arg("--bin")
-            .arg(options.cargo_bin_name());
+        let mut command = options.cargo_build_command();
 
         if !options.target().is_current() {
             command.arg("--target").arg(options.target().to_string());
@@ -181,6 +176,7 @@ pub trait Bundler: Debug + Send + Sync {
                     Platform::Mac => extension == Some("dylib"),
                     Platform::Windows => extension == Some("dll"),
                     Platform::Linux => extension == Some("so"),
+                    Platform::Android => extension == Some("so"),
                 }
             })
             .collect()

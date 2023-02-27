@@ -162,13 +162,13 @@ impl ResolvedOptions {
         self.executable_name.as_str()
     }
 
-    pub fn executable_extension(&self) -> Option<String> {
-        #[cfg(target_os = "linux")]
-        return None;
-        #[cfg(target_os = "macos")]
-        return None;
-        #[cfg(target_os = "windows")]
-        return Some("exe".to_string());
+    pub fn executable_artefact_extension(&self) -> Option<String> {
+        match self.target().platform() {
+            Platform::Mac => None,
+            Platform::Windows => Some("exe".to_string()),
+            Platform::Linux => None,
+            Platform::Android => Some("so".to_string()),
+        }
     }
 
     pub fn version(&self) -> &Version {

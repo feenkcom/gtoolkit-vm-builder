@@ -1,6 +1,7 @@
 use crate::{BundleOptions, Executable, Target};
 use feenk_releaser::Version;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 #[derive(Debug)]
 pub struct ExecutableOptions<'bundle_options> {
@@ -64,8 +65,12 @@ impl<'bundle_options> ExecutableOptions<'bundle_options> {
         self.options.icons()
     }
 
-    pub fn cargo_bin_name(&self) -> &str {
-        self.executable().cargo_bin_name()
+    pub fn cargo_build_command(&self) -> Command {
+        self.executable().cargo_build_command()
+    }
+
+    pub fn cargo_package_name(&self) -> &str {
+        self.executable().cargo_package_name()
     }
 
     pub fn compiled_executable_name(&self) -> String {

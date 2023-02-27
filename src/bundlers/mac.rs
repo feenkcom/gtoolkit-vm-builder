@@ -91,7 +91,8 @@ impl MacBundler {
                                     .unwrap()
                                     .to_str()
                                     .unwrap();
-                                let new_path = format!("@executable_path/{}/{}", path.as_ref(), &file_name);
+                                let new_path =
+                                    format!("@executable_path/{}/{}", path.as_ref(), &file_name);
 
                                 if command.cmd() == LC_ID_DYLIB {
                                     if !Command::new("install_name_tool")
