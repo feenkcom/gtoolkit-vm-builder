@@ -23,6 +23,23 @@ impl Bundler for AndroidBundler {
         let bundle_location = options.bundle_location();
         let app_name = options.app_name();
 
+        let resources_dir = bundle_location.join("res");
+        if resources_dir.exists() {
+            std::fs::remove_dir_all(resources_dir.as_path()).unwrap();
+        }
+        std::fs::create_dir_all(resources_dir.as_path()).unwrap();
+
+        for each in options.icons() {
+            let mut copy_options = fs_extra::dir::CopyOptions::default();
+            copy_options.content_only = true;
+            fs_extra::dir::copy(each, resources_dir.as_path(), &copy_options).unwrap();
+        }
+        let icon = if options.icons().is_empty() {
+            None
+        } else {
+            Some("@mipmap/ic_launcher".to_string())
+        };
+
         let android_target = match options.target() {
             Target::AArch64LinuxAndroid => AndroidTarget::Arm64V8a,
             _ => {
@@ -56,7 +73,7 @@ impl Bundler for AndroidBundler {
             debuggable: Some(true),
             theme: Some("@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen".to_string()),
             has_code: false,
-            icon: None,
+            icon,
             label: app_name.to_string(),
             meta_data: vec![],
             activity: android_activity,
@@ -91,7 +108,7 @@ impl Bundler for AndroidBundler {
             build_dir: bundle_location.clone(),
             apk_name: app_name.to_string(),
             assets: None,
-            resources: None,
+            resources: Some(resources_dir),
             manifest,
             disable_aapt_compression: !options.release(),
             strip: StripConfig::Default,
@@ -112,8 +129,7 @@ impl Bundler for AndroidBundler {
                 .expect("Add runtime lib")
             });
 
-        apk
-            .add_pending_libs_and_align()
+        apk.add_pending_libs_and_align()
             .expect("Add pending libs and align");
     }
 
