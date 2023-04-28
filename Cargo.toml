@@ -40,6 +40,7 @@ shared-library-builder = { git = "https://github.com/feenkcom/shared-library-bui
 libboxer-library = { git = "https://github.com/feenkcom/libboxer.git" }
 libprocess-builder = { git = "https://github.com/feenkcom/libprocess.git" }
 libclipboard-builder = { git = "https://github.com/feenkcom/libclipboard.git" }
+libfilewatcher-builder = { git = "https://github.com/feenkcom/libfilewatcher.git" }
 libglutin-library = { git = "https://github.com/feenkcom/libglutin.git" }
 libwinit-builder = { git = "https://github.com/feenkcom/libwinit.git" }
 libgleam-library = { git = "https://github.com/feenkcom/libgleam.git" }

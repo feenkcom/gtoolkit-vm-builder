@@ -757,6 +757,7 @@ dependencies = [
  "libboxer-library",
  "libcairo-library",
  "libclipboard-builder",
+ "libfilewatcher-builder",
  "libfreetype-library",
  "libgit2-library",
  "libgleam-library",
@@ -1069,6 +1070,14 @@ dependencies = [
 name = "libclipboard-builder"
 version = "0.2.0"
 source = "git+https://github.com/feenkcom/libclipboard.git#64106c1bacc040410015411a3229941f5351abdd"
+dependencies = [
+ "shared-library-builder",
+]
+
+[[package]]
+name = "libfilewatcher-builder"
+version = "0.1.0"
+source = "git+https://github.com/feenkcom/libfilewatcher.git#83c346b5058714580873dd034d1ef8bc430912c6"
 dependencies = [
  "shared-library-builder",
 ]
