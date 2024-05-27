@@ -5,6 +5,7 @@ use clap::ArgEnum;
 use libboxer_library::libboxer;
 use libcairo_library::libcairo;
 use libclipboard_builder::libclipboard;
+use libfilewatcher_builder::libfilewatcher;
 use libfreetype_library::libfreetype;
 use libgit2_library::libgit2;
 use libgleam_library::libgleam;
@@ -49,6 +50,8 @@ pub enum ThirdPartyLibrary {
     Pixels,
     #[clap(name = "clipboard")]
     Clipboard,
+    #[clap(name = "filewatcher")]
+    Filewatcher,
     #[clap(name = "process")]
     Process,
     #[clap(name = "test-library")]
@@ -111,6 +114,9 @@ impl ThirdPartyLibrary {
             }
             ThirdPartyLibrary::Clipboard => {
                 libclipboard(Some(versions.version_of(ThirdPartyLibrary::Clipboard))).into()
+            }
+            ThirdPartyLibrary::Filewatcher => {
+                libfilewatcher(Some(versions.version_of(ThirdPartyLibrary::Filewatcher))).into()
             }
             ThirdPartyLibrary::Crypto => {
                 libcrypto(versions.get_version_of(ThirdPartyLibrary::Crypto)).into()
