@@ -2,7 +2,7 @@ use std::convert::TryFrom;
 use std::fmt::Debug;
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
+use std::process::Command;
 use std::str::FromStr;
 
 use clap::{ArgEnum, Parser};
@@ -212,17 +212,42 @@ impl BuilderOptions {
     }
 
     pub fn workspace_directory(&self) -> Option<PathBuf> {
-        let output = Command::new("cargo")
+        let error_message = "Failed to locate Cargo.toml of the VM project";
+
+        which::which("cargo").expect(&format!(
+            "{}: `cargo` must be installed and be in the PATH",
+            error_message
+        ));
+
+        let mut command = Command::new("cargo");
+        command
             .arg("locate-project")
             .arg("--workspace")
             .arg("--message-format")
-            .arg("plain")
-            .stdout(Stdio::piped())
-            .output()
-            .expect("Failed to execute command");
+            .arg("plain");
 
-        let workspace_toml_path =
-            PathBuf::new().join(String::from_utf8_lossy(&output.stdout).to_string());
+        let output = command
+            .output()
+            .map_err(|error| {
+                format!("{}: {:?} panicked due to {}", error_message, command, error);
+            })
+            .unwrap();
+
+        let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+        let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+
+        if !output.status.success() {
+            panic!(
+                "{}: {:?} didn't finish successfully.\n\tExit code: {}\n\tStdout: {}\n\tStderr: {}",
+                error_message,
+                command,
+                output.status.to_string(),
+                &stdout,
+                &stderr
+            );
+        }
+
+        let workspace_toml_path = PathBuf::new().join(stdout);
         Some(workspace_toml_path.parent().unwrap().to_path_buf())
     }
 
