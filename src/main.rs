@@ -27,7 +27,6 @@ use crate::bundlers::linux::LinuxBundler;
 use crate::bundlers::mac::MacBundler;
 use crate::bundlers::windows::WindowsBundler;
 use crate::bundlers::Bundler;
-use crate::options::{BuilderOptions, BundleOptions, Executable, Target};
 
 mod bundlers;
 mod error;

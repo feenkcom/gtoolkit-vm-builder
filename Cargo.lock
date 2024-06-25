@@ -767,6 +767,7 @@ dependencies = [
  "libprocess-builder",
  "libsdl2-library",
  "libskia-builder",
+ "libwebview-builder",
  "libwinit-builder",
  "mach_object",
  "memmap",
@@ -1171,6 +1172,14 @@ dependencies = [
 name = "libskia-builder"
 version = "0.3.0"
 source = "git+https://github.com/feenkcom/libskia.git#b0b66cc5201859dc6090811b981d6e6c6932a9f0"
+dependencies = [
+ "shared-library-builder",
+]
+
+[[package]]
+name = "libwebview-builder"
+version = "0.1.0"
+source = "git+https://github.com/feenkcom/libwebview.git#41289721878541b3fac5e5a168ca9fe8115fe71f"
 dependencies = [
  "shared-library-builder",
 ]

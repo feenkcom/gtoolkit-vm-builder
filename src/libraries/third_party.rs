@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt::Display;
 use std::str::FromStr;
 
 use clap::ArgEnum;
@@ -15,6 +16,7 @@ use libpixels_builder::libpixels;
 use libprocess_builder::libprocess;
 use libsdl2_library::libsdl2;
 use libskia_builder::libskia;
+use libwebview_builder::libwebview;
 use libwinit_builder::libwinit;
 use serde::{Deserialize, Serialize};
 use shared_library_builder::{Library, LibraryTarget};
@@ -54,6 +56,8 @@ pub enum ThirdPartyLibrary {
     Filewatcher,
     #[clap(name = "process")]
     Process,
+    #[clap(name = "webview")]
+    WebView,
     #[clap(name = "test-library")]
     TestLibrary,
 }
@@ -93,9 +97,13 @@ impl FromStr for ThirdPartyLibrary {
     }
 }
 
-impl ToString for ThirdPartyLibrary {
-    fn to_string(&self) -> String {
-        self.to_possible_value().unwrap().get_name().to_string()
+impl Display for ThirdPartyLibrary {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            self.to_possible_value().unwrap().get_name().to_string()
+        )
     }
 }
 
@@ -113,10 +121,10 @@ impl ThirdPartyLibrary {
                 libcairo(versions.get_version_of(ThirdPartyLibrary::Cairo)).into()
             }
             ThirdPartyLibrary::Clipboard => {
-                libclipboard(Some(versions.version_of(ThirdPartyLibrary::Clipboard))).into()
+                libclipboard(versions.get_version_of(ThirdPartyLibrary::Clipboard)).into()
             }
             ThirdPartyLibrary::Filewatcher => {
-                libfilewatcher(Some(versions.version_of(ThirdPartyLibrary::Filewatcher))).into()
+                libfilewatcher(versions.get_version_of(ThirdPartyLibrary::Filewatcher)).into()
             }
             ThirdPartyLibrary::Crypto => {
                 libcrypto(versions.get_version_of(ThirdPartyLibrary::Crypto)).into()
@@ -134,22 +142,25 @@ impl ThirdPartyLibrary {
                 libglutin(versions.get_version_of(ThirdPartyLibrary::Glutin)).into()
             }
             ThirdPartyLibrary::Process => {
-                libprocess(Some(versions.version_of(ThirdPartyLibrary::Process))).into()
+                libprocess(versions.get_version_of(ThirdPartyLibrary::Process)).into()
             }
             ThirdPartyLibrary::Sdl2 => {
                 libsdl2(versions.get_version_of(ThirdPartyLibrary::Sdl2)).into()
             }
             ThirdPartyLibrary::Skia => {
-                libskia(target, Some(versions.version_of(ThirdPartyLibrary::Skia))).into()
+                libskia(target, versions.get_version_of(ThirdPartyLibrary::Skia)).into()
             }
             ThirdPartyLibrary::Ssl => {
                 libssl(versions.get_version_of(ThirdPartyLibrary::Ssl)).into()
             }
             ThirdPartyLibrary::Winit => {
-                libwinit(Some(versions.version_of(ThirdPartyLibrary::Winit))).into()
+                libwinit(versions.get_version_of(ThirdPartyLibrary::Winit)).into()
             }
             ThirdPartyLibrary::Pixels => {
-                libpixels(Some(versions.version_of(ThirdPartyLibrary::Pixels))).into()
+                libpixels(versions.get_version_of(ThirdPartyLibrary::Pixels)).into()
+            }
+            ThirdPartyLibrary::WebView => {
+                libwebview(versions.get_version_of(ThirdPartyLibrary::WebView)).into()
             }
             ThirdPartyLibrary::TestLibrary => test_library().into(),
         }
