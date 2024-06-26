@@ -174,8 +174,13 @@ pub struct BuilderOptions {
     #[clap(long, value_parser = parse_key_val::<ThirdPartyLibrary, String>, multiple_values = true)]
     /// Override a library version specified in LIBRARY=version format. Multiple libraries are allowed.
     override_library_version: Option<Vec<(ThirdPartyLibrary, String)>>,
-    /// Use a specific VM to run a VMMaker, must be a path to the executable. When specified, the build will not attempt to download a VM
-    #[clap(long, parse(from_os_str))]
+    /// Use a specific VM to run a VMMaker, must be a path to the executable.
+    /// When specified, the build will not attempt to download a VM.
+    /// By default, it is assumed that the VM is a GToolkit VM.
+    /// However, it is possible to specify the type of the VM using the following syntax:
+    ///     gtoolkit:/path/to/vm - to use it as a GToolkit VM
+    ///     pharo:/path/to/vm - to use it as a Pharo VM
+    #[clap(long, parse(from_os_str), verbatim_doc_comment)]
     #[serde(skip)]
     vmmaker_vm: Option<PathBuf>,
     /// Use a specific image to build a VMMaker from, must be a path to the .image. When specified, the build will not attempt to download an image
