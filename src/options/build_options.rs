@@ -190,6 +190,9 @@ pub struct BuilderOptions {
     /// Pick which executables to compile. This allows users to create an app without CLI or GUI interface.
     #[clap(long, arg_enum, ignore_case = true, multiple_values = true)]
     executables: Option<Vec<Executable>>,
+    /// Build with specific features selected
+    #[clap(long)]
+    features: Option<Vec<String>>,
 }
 
 impl BuilderOptions {
@@ -312,6 +315,13 @@ impl BuilderOptions {
 
     pub fn executables(&self) -> Option<&Vec<Executable>> {
         self.executables.as_ref()
+    }
+
+    pub fn features(&self) -> &[String] {
+        self.features
+            .as_ref()
+            .map(|features| features.as_slice())
+            .unwrap_or(&[])
     }
 }
 

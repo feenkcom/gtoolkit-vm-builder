@@ -88,6 +88,10 @@ impl BundleOptions {
         self.options.executables()
     }
 
+    pub fn features(&self) -> &[String] {
+        self.options.features()
+    }
+
     pub fn target(&self) -> &Target {
         self.options.target()
     }

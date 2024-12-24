@@ -58,6 +58,11 @@ pub trait Bundler: Debug + Send + Sync {
             command.arg("--release");
         }
 
+        if !options.features().is_empty() {
+            command.arg("--features");
+            command.args(options.features());
+        }
+
         if !command.status().unwrap().success() {
             panic!("Failed to compile a vm-client")
         }
@@ -130,7 +135,7 @@ pub trait Bundler: Debug + Send + Sync {
         let library_path = self.compiled_libraries_directory(options).join(
             library
                 .compiled_library_name()
-                .file_name(library.name(), &library_target),
+                .file_name(library.name(), &library_target, false),
         );
 
         std::fs::copy(&compiled_library, &library_path).map_err(|error| {

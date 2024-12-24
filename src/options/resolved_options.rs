@@ -207,6 +207,10 @@ impl ResolvedOptions {
         &self.executables
     }
 
+    pub fn features(&self) -> &[String] {
+        self.builder_flags.features()
+    }
+
     pub fn workspace_directory(&self) -> Option<PathBuf> {
         self.builder_flags.workspace_directory()
     }

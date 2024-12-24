@@ -65,6 +65,10 @@ impl<'bundle_options> ExecutableOptions<'bundle_options> {
         self.options.icons()
     }
 
+    pub fn features(&self) -> &[String] {
+        self.options.features()
+    }
+
     pub fn cargo_build_command(&self) -> Command {
         self.executable().cargo_build_command()
     }
