@@ -1,5 +1,6 @@
 # Glamorous Toolkit Virtual Machine Builder
-A command line tool written in Rust to build and package [gtoolkit-vm](https://github.com/feenkcom/gtoolkit-vm)
+
+This project holds a command line tool written in Rust to build and package [gtoolkit-vm](https://github.com/feenkcom/gtoolkit-vm), the virtual machine used by [Glamorous Toolkit](https://github.com/feenkcom/gtoolkit).
 
 ### Downloading sources and tools
 First make sure to clone the `gtoolkit-vm`:
