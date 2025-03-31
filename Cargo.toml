@@ -43,6 +43,7 @@ libclipboard-builder = { git = "https://github.com/feenkcom/libclipboard.git" }
 libfilewatcher-builder = { git = "https://github.com/feenkcom/libfilewatcher.git" }
 libglutin-library = { git = "https://github.com/feenkcom/libglutin.git" }
 libwinit-builder = { git = "https://github.com/feenkcom/libwinit.git" }
+libwinit30-builder = { git = "https://github.com/feenkcom/libwinit30.git" }
 libgleam-library = { git = "https://github.com/feenkcom/libgleam.git" }
 libskia-builder = { git = "https://github.com/feenkcom/libskia.git" }
 libsdl2-library = { git = "https://github.com/feenkcom/libsdl2.git" }

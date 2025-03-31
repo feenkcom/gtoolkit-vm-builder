@@ -18,6 +18,7 @@ use libsdl2_library::libsdl2;
 use libskia_builder::libskia;
 use libwebview_builder::libwebview;
 use libwinit_builder::libwinit;
+use libwinit30_builder::libwinit as libwinit30;
 use serde::{Deserialize, Serialize};
 use shared_library_builder::{Library, LibraryTarget};
 
@@ -48,6 +49,8 @@ pub enum ThirdPartyLibrary {
     Gleam,
     #[clap(name = "winit")]
     Winit,
+    #[clap(name = "winit30")]
+    Winit30,
     #[clap(name = "pixels")]
     Pixels,
     #[clap(name = "clipboard")]
@@ -155,6 +158,9 @@ impl ThirdPartyLibrary {
             }
             ThirdPartyLibrary::Winit => {
                 libwinit(versions.get_version_of(ThirdPartyLibrary::Winit)).into()
+            }
+            ThirdPartyLibrary::Winit30 => {
+                libwinit30(versions.get_version_of(ThirdPartyLibrary::Winit30)).into()
             }
             ThirdPartyLibrary::Pixels => {
                 libpixels(versions.get_version_of(ThirdPartyLibrary::Pixels)).into()

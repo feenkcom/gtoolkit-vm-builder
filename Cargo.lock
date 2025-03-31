@@ -704,6 +704,7 @@ dependencies = [
  "libskia-builder",
  "libwebview-builder",
  "libwinit-builder",
+ "libwinit30-builder",
  "mach_object",
  "memmap",
  "mustache",
@@ -1220,6 +1221,14 @@ dependencies = [
 name = "libwinit-builder"
 version = "0.2.0"
 source = "git+https://github.com/feenkcom/libwinit.git#3c3e52e872c117e7a404c63db9cf564da43660cd"
+dependencies = [
+ "shared-library-builder",
+]
+
+[[package]]
+name = "libwinit30-builder"
+version = "0.2.0"
+source = "git+https://github.com/feenkcom/libwinit30.git#bf68bb23d07dac7d0f4989534c8306ee84263974"
 dependencies = [
  "shared-library-builder",
 ]
