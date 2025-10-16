@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::str::FromStr;
 
-use clap::{ArgEnum, Parser};
+use clap::{ArgEnum, Parser, ArgAction};
 use rustc_version::version_meta;
 use serde::{Deserialize, Serialize};
 
@@ -129,8 +129,8 @@ pub struct BuilderOptions {
     /// A level of verbosity, and can be used multiple times
     #[clap(short, long, parse(from_occurrences))]
     verbose: i32,
-    /// To bundle a release build
-    #[clap(long)]
+    #[clap(long = "release", action = ArgAction::SetTrue, help = "Build in release mode")]
+    #[clap(long = "debug", action = ArgAction::SetFalse, help = "Build in debug mode")]
     release: bool,
     #[clap(long, arg_enum, ignore_case = true)]
     /// To cross-compile and bundle an application for another OS
@@ -142,7 +142,7 @@ pub struct BuilderOptions {
     /// A name of the app
     #[clap(long)]
     app_name: Option<String>,
-    /// An output location of the bundle. By default a bundle is placed inside of the cargo's target dir in the following format: target/{target architecture}/{build|release}/
+    /// An output location of the bundle. By default, a bundle is placed inside of the cargo's target dir in the following format: target/{target architecture}/{build|release}/
     #[clap(long, parse(from_os_str))]
     #[serde(skip)]
     bundle_dir: Option<PathBuf>,
