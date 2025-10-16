@@ -62,6 +62,10 @@ impl WindowsBundler {
     fn temporary_directory(&self) -> PathBuf {
         std::env::current_dir().unwrap().join("temp")
     }
+
+    fn debug_symbol_file(binary: &Path) -> PathBuf {
+        binary.with_extension("pdb")
+    }
 }
 
 impl Bundler for WindowsBundler {
@@ -153,14 +157,46 @@ impl Bundler for WindowsBundler {
                     );
                 }
             };
+
+            if !options.release() {
+                let compiled_symbols_path = Self::debug_symbol_file(&compiled_executable_path);
+                let bundled_symbols_path = Self::debug_symbol_file(&bundled_executable_path);
+
+                match fs::copy(&compiled_symbols_path, &bundled_symbols_path) {
+                    Ok(_) => {}
+                    Err(error) => {
+                        panic!(
+                            "Could not copy {} to {} due to {}",
+                            &compiled_symbols_path.display(),
+                            &bundled_symbols_path.display(),
+                            error
+                        );
+                    }
+                };
+            }
         });
 
         fs_extra::copy_items(
             &self.compiled_libraries(options),
-            binary_dir,
+            &binary_dir,
             &fs_extra::dir::CopyOptions::new(),
         )
         .unwrap();
+
+        if !options.release() {
+            let compiled_libraries_debug_symbols: Vec<PathBuf> = self
+                .compiled_libraries(options)
+                .iter()
+                .map(|each| Self::debug_symbol_file(each))
+                .filter(|each| each.exists())
+                .collect();
+            fs_extra::copy_items(
+                &compiled_libraries_debug_symbols,
+                &binary_dir,
+                &fs_extra::dir::CopyOptions::new(),
+            )
+            .unwrap();
+        }
     }
 
     fn bundled_executable_directory(&self, options: &BundleOptions) -> PathBuf {
