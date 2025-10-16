@@ -64,6 +64,18 @@ impl WindowsBundler {
     }
 
     fn debug_symbol_file(binary: &Path) -> PathBuf {
+        // PDB filenames are derived from the executable name,
+        // but MSVC/LLVM does not allow certain characters like "-"
+        // in filenames for PDBs, so it replaces hyphens - with underscores _.
+        // So my_app-cli.exe becomes my_app_cli.pdb.
+        let name = binary
+            .file_name()
+            .and_then(|s| s.to_str())
+            .map(|name| name.replace("-", "_"));
+        let binary = match name {
+            Some(name) => binary.with_file_name(name),
+            None => binary.to_owned(),
+        };
         binary.with_extension("pdb")
     }
 }
