@@ -129,9 +129,12 @@ pub struct BuilderOptions {
     /// A level of verbosity, and can be used multiple times
     #[clap(short, long, parse(from_occurrences))]
     verbose: i32,
-    #[clap(long = "release", action = ArgAction::SetTrue, help = "Build in release mode")]
-    #[clap(long = "debug", action = ArgAction::SetFalse, help = "Build in debug mode")]
+    /// Build in release mode
+    #[clap(long, conflicts_with = "debug")]
     release: bool,
+    /// Build in debug mode
+    #[clap(long, conflicts_with = "release")]
+    debug: bool,
     #[clap(long, arg_enum, ignore_case = true)]
     /// To cross-compile and bundle an application for another OS
     target: Option<Target>,
@@ -282,7 +285,13 @@ impl BuilderOptions {
     }
 
     pub fn release(&self) -> bool {
-        self.release
+        if self.release {
+            true
+        } else if self.debug {
+            false
+        } else {
+            false // default
+        }
     }
 
     pub fn icons(&self) -> Option<&Vec<String>> {
