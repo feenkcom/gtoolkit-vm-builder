@@ -182,6 +182,10 @@ impl ResolvedOptions {
     pub fn release(&self) -> bool {
         self.builder_flags.release()
     }
+    
+    pub fn include_debug_symbols(&self) -> bool {
+        self.builder_flags.include_debug_symbols()
+    }
 
     pub fn icons(&self) -> &Vec<PathBuf> {
         &self.icons

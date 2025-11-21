@@ -170,9 +170,11 @@ impl Bundler for WindowsBundler {
                 }
             };
 
-            if !options.release() {
+            if options.include_debug_symbols() {
                 let compiled_symbols_path = Self::debug_symbol_file(&compiled_executable_path);
-                let bundled_symbols_path = Self::debug_symbol_file(&bundled_executable_path);
+                let bundled_symbols_path = Self::debug_symbol_file(
+                    &binary_dir.join(options.compiled_executable_name(executable)),
+                );
 
                 match fs::copy(&compiled_symbols_path, &bundled_symbols_path) {
                     Ok(_) => {}
@@ -195,7 +197,7 @@ impl Bundler for WindowsBundler {
         )
         .unwrap();
 
-        if !options.release() {
+        if options.include_debug_symbols() {
             let compiled_libraries_debug_symbols: Vec<PathBuf> = self
                 .compiled_libraries(options)
                 .iter()
