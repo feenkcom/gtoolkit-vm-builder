@@ -135,9 +135,9 @@ pub struct BuilderOptions {
     /// Build in debug mode
     #[clap(long, conflicts_with = "release")]
     debug: bool,
-    /// Include debug symbols in the bundle
+    /// Strip debug symbols from the bundle
     #[clap(long)]
-    include_debug_symbols: bool,
+    strip_debug_symbols: bool,
     #[clap(long, arg_enum, ignore_case = true)]
     /// To cross-compile and bundle an application for another OS
     target: Option<Target>,
@@ -298,7 +298,7 @@ impl BuilderOptions {
     }
     
     pub fn include_debug_symbols(&self) -> bool {
-        self.include_debug_symbols
+        !self.strip_debug_symbols
     }
 
     pub fn icons(&self) -> Option<&Vec<String>> {
