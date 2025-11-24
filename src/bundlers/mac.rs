@@ -154,6 +154,11 @@ impl MacBundler {
     fn set_rpath(filename: impl AsRef<Path>) -> Result<()> {
         Self::set_rpath_to(filename, "Plugins")
     }
+
+    fn debug_symbol_file(binary: &Path) -> PathBuf {
+        let debug_symbols_folder_name = binary.file_name().and_then(|name|name.to_str()).map(|name| format!("{}.dSYM", name)).unwrap();
+        binary.with_file_name(debug_symbols_folder_name)
+    }
 }
 
 impl Bundler for MacBundler {
@@ -205,6 +210,16 @@ impl Bundler for MacBundler {
             &fs_extra::dir::CopyOptions::new(),
         )
         .unwrap();
+        
+        if options.include_debug_symbols() {
+            for each_library in self.compiled_libraries(options) {
+                let debug_symbols = Self::debug_symbol_file(&each_library);
+                if debug_symbols.exists() {
+                    let options = fs_extra::dir::CopyOptions::default();
+                    fs_extra::dir::copy(debug_symbols, &plugins_dir, &options).unwrap();
+                }
+            }
+        }
 
         for library_path in self.compiled_libraries_in(&plugins_dir, options) {
             Self::set_rpath(&library_path).expect(&format!(

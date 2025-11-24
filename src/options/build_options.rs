@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::str::FromStr;
 
-use clap::{ArgEnum, Parser, ArgAction};
+use clap::{ArgEnum, Args};
 use rustc_version::version_meta;
 use serde::{Deserialize, Serialize};
 
@@ -123,8 +123,7 @@ impl Platform {
     }
 }
 
-#[derive(Parser, Clone, Debug, Default, Serialize, Deserialize)]
-#[clap(version = "1.0", author = "feenk gmbh <contact@feenk.com>")]
+#[derive(Args, Clone, Debug, Default, Serialize, Deserialize)]
 pub struct BuilderOptions {
     /// A level of verbosity, and can be used multiple times
     #[clap(short, long, parse(from_occurrences))]
@@ -148,7 +147,7 @@ pub struct BuilderOptions {
     /// A name of the app
     #[clap(long)]
     app_name: Option<String>,
-    /// An output location of the bundle. By default, a bundle is placed inside of the cargo's target dir in the following format: target/{target architecture}/{build|release}/
+    /// An output location of the bundle. By default, a bundle is placed inside the cargo's target dir in the following format: target/{target architecture}/{build|release}/
     #[clap(long, parse(from_os_str))]
     #[serde(skip)]
     bundle_dir: Option<PathBuf>,
@@ -296,7 +295,7 @@ impl BuilderOptions {
             false // default
         }
     }
-    
+
     pub fn include_debug_symbols(&self) -> bool {
         !self.strip_debug_symbols
     }

@@ -111,7 +111,7 @@ impl BundleOptions {
     pub fn release(&self) -> bool {
         self.options.release()
     }
-    
+
     pub fn include_debug_symbols(&self) -> bool {
         self.options.include_debug_symbols()
     }

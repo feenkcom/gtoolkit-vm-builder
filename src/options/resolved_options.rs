@@ -41,7 +41,7 @@ impl AppInfo {
         let info = git_info::get();
 
         Self {
-            build_timestamp: Utc::now().to_string(),
+            build_timestamp: Utc::now().format("%Y-%m-%d").to_string(),
             git_branch: info.current_branch,
             git_sha: info.head.last_commit_hash,
         }
@@ -182,7 +182,7 @@ impl ResolvedOptions {
     pub fn release(&self) -> bool {
         self.builder_flags.release()
     }
-    
+
     pub fn include_debug_symbols(&self) -> bool {
         self.builder_flags.include_debug_symbols()
     }

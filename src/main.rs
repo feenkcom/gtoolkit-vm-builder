@@ -15,9 +15,10 @@ extern crate user_error;
 extern crate which;
 extern crate xz2;
 
+use std::fs;
 use std::io::Write;
 
-use clap::Parser;
+use clap::{Parser, Subcommand};
 
 pub use error::*;
 pub use options::*;
@@ -33,54 +34,107 @@ mod error;
 mod libraries;
 mod options;
 
-fn main() -> Result<()> {
-    let build_options: BuilderOptions = BuilderOptions::parse();
+#[derive(Parser, Debug)]
+#[clap(version = "1.0", author = "feenk gmbh <contact@feenk.com>")]
+struct Cli {
+    #[clap(subcommand)]
+    command: Command,
+}
 
-    build_synchronously(build_options)?;
+#[derive(Subcommand, Debug)]
+enum Command {
+    /// Compile executables and third-party libraries
+    Compile(BuilderOptions),
+    /// Bundle previously compiled artifacts
+    Bundle(BuilderOptions),
+    /// Compile and bundle in one go
+    Build(BuilderOptions),
+}
+
+fn main() -> Result<()> {
+    let cli = Cli::parse();
+
+    match cli.command {
+        Command::Compile(build_options) => compile(build_options)?,
+        Command::Bundle(build_options) => bundle(build_options)?,
+        Command::Build(build_options) => build(build_options)?,
+    }
 
     Ok(())
 }
 
-fn build_synchronously(build_options: BuilderOptions) -> Result<()> {
-    let resolved_options = ResolvedOptions::new(build_options);
-    let bundler = bundler(&resolved_options);
-
-    let bundle_options = BundleOptions::new(resolved_options);
-
-    bundler.ensure_compiled_libraries_directory(&bundle_options)?;
-
-    export_build_info(&bundler, &bundle_options)?;
-
-    bundle_options.executables().iter().for_each(|executable| {
-        let executable_options = ExecutableOptions::new(&bundle_options, executable.clone());
-        bundler.pre_compile(&executable_options);
-        bundler.compile_binary(&executable_options);
-        bundler.post_compile(&bundle_options, executable, &executable_options)
-    });
-
-    bundler.compile_third_party_libraries(&bundle_options)?;
+fn build(build_options: BuilderOptions) -> Result<()> {
+    let (bundler, bundle_options) = prepare(build_options);
+    compile_components(&*bundler, &bundle_options)?;
     bundler.bundle(&bundle_options);
 
     Ok(())
 }
 
-fn export_build_info(bundler: &Box<dyn Bundler>, bundle_options: &BundleOptions) -> Result<()> {
-    let executables_dir = bundler.bundled_resources_directory(&bundle_options);
+fn compile(build_options: BuilderOptions) -> Result<()> {
+    let (bundler, bundle_options) = prepare(build_options);
+    compile_components(&*bundler, &bundle_options)
+}
+
+fn bundle(build_options: BuilderOptions) -> Result<()> {
+    let (bundler, bundle_options) = prepare(build_options);
+    bundler.ensure_compiled_libraries_directory(&bundle_options)?;
+    bundler.bundle(&bundle_options);
+
+    Ok(())
+}
+
+fn prepare(build_options: BuilderOptions) -> (Box<dyn Bundler>, BundleOptions) {
+    let resolved_options = ResolvedOptions::new(build_options);
+    let bundler = bundler(&resolved_options);
+
+    let bundle_options = BundleOptions::new(resolved_options);
+
+    (bundler, bundle_options)
+}
+
+fn compile_components(bundler: &dyn Bundler, bundle_options: &BundleOptions) -> Result<()> {
+    bundler.ensure_compiled_libraries_directory(bundle_options)?;
+
+    export_build_info(bundler, bundle_options)?;
+
+    bundle_options.executables().iter().for_each(|executable| {
+        let executable_options = ExecutableOptions::new(bundle_options, executable.clone());
+        bundler.pre_compile(&executable_options);
+        bundler.compile_binary(&executable_options);
+        bundler.post_compile(bundle_options, executable, &executable_options)
+    });
+
+    bundler.compile_third_party_libraries(bundle_options)?;
+
+    Ok(())
+}
+
+fn export_build_info(bundler: &dyn Bundler, bundle_options: &BundleOptions) -> Result<()> {
+    let executables_dir = bundler.bundled_resources_directory(bundle_options);
 
     if !executables_dir.exists() {
-        std::fs::create_dir_all(&executables_dir)?;
+        fs::create_dir_all(&executables_dir)?;
     }
 
     // export the info about the app and third party libs
     let json = serde_json::to_string_pretty(&bundle_options)?;
     let file_path = bundler
-        .compilation_location(&bundle_options)
+        .compilation_location(bundle_options)
         .join("build-info.json");
 
-    std::env::set_var("APP_BUILD_INFO", file_path.as_os_str());
+    let existing_content = if file_path.exists() {
+        fs::read_to_string(&file_path).ok()
+    } else {
+        None
+    };
+    
+    if existing_content.as_ref() != Some(&json) {
+        let mut file = fs::File::create(&file_path)?;
+        write!(&mut file, "{}", json).unwrap();
+    }
 
-    let mut file = std::fs::File::create(file_path)?;
-    writeln!(&mut file, "{}", json).unwrap();
+    std::env::set_var("APP_BUILD_INFO", file_path.as_os_str());
 
     Ok(())
 }
