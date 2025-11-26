@@ -721,7 +721,7 @@ dependencies = [
  "mach_object",
  "memmap",
  "mustache",
- "ndk-build",
+ "ndk-build 0.10.0",
  "pkg-config",
  "rustc_version",
  "serde",
@@ -1174,7 +1174,7 @@ version = "0.1.0"
 source = "git+https://github.com/feenkcom/libopenssl.git#54e4782ab9b61c4672d8cb020119a3a1cbcb0393"
 dependencies = [
  "cc",
- "ndk-build",
+ "ndk-build 0.9.0",
  "serde",
  "shared-library-builder",
  "typetag",
@@ -1405,6 +1405,20 @@ name = "ndk-build"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a1c3df171aaf0f60b9d771d74830ce6abc3cacfe2a5cbcf4e50e0f16f699c531"
+dependencies = [
+ "dirs",
+ "dunce",
+ "quick-xml",
+ "serde",
+ "thiserror",
+ "which 4.4.2",
+]
+
+[[package]]
+name = "ndk-build"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f38285f506f67137b22542584e454319b0a7a7ae86a50100a8ca665195679883"
 dependencies = [
  "dirs",
  "dunce",
@@ -2066,7 +2080,7 @@ dependencies = [
  "file-matcher 0.7.0",
  "flate2",
  "fs_extra",
- "ndk-build",
+ "ndk-build 0.9.0",
  "pkg-config",
  "rustc_version",
  "serde",

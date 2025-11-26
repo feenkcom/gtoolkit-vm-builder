@@ -58,6 +58,7 @@ impl Bundler for AndroidBundler {
             orientation: None,
             exported: None,
             resizeable_activity: None,
+            always_retain_task_state: None,
             meta_data: vec![MetaData {
                 name: "android.app.lib_name".to_string(),
                 value: "vm_client_android".to_string(),
@@ -75,6 +76,8 @@ impl Bundler for AndroidBundler {
             has_code: false,
             icon,
             label: app_name.to_string(),
+            extract_native_libs: None,
+            uses_cleartext_traffic: None,
             meta_data: vec![],
             activity: android_activity,
         };
