@@ -20,7 +20,7 @@ use libwebview_builder::libwebview;
 use libwinit30_builder::libwinit as libwinit30;
 use libwinit_builder::libwinit;
 use serde::{Deserialize, Serialize};
-use shared_library_builder::{Library, LibraryTarget};
+use shared_library_builder::{GitLocation, Library, LibraryLocation, LibraryTarget, RustLibrary};
 
 use crate::libraries::test_library;
 
@@ -37,6 +37,8 @@ pub enum ThirdPartyLibrary {
     Sdl2,
     #[clap(name = "boxer")]
     Boxer,
+    #[clap(name = "editor")]
+    Editor,
     #[clap(name = "freetype")]
     Freetype,
     #[clap(name = "cairo")]
@@ -132,6 +134,15 @@ impl ThirdPartyLibrary {
             ThirdPartyLibrary::Crypto => {
                 libcrypto(versions.get_version_of(ThirdPartyLibrary::Crypto)).into()
             }
+            ThirdPartyLibrary::Editor => RustLibrary::new(
+                "Editor",
+                LibraryLocation::Git(
+                    GitLocation::github("feenkcom", "gtoolkit-editor-rs")
+                        .tag_or_latest(versions.get_version_of(ThirdPartyLibrary::Editor)),
+                ),
+            )
+            .package("libeditor")
+            .into(),
             ThirdPartyLibrary::Freetype => {
                 libfreetype(versions.get_version_of(ThirdPartyLibrary::Freetype)).into()
             }
