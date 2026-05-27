@@ -136,13 +136,12 @@ pipeline {
 
                     environment {
                         TARGET = "${WINDOWS_AMD64_TARGET}"
-                        LLVM_HOME = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Tools\\Llvm\\x64'
+                        LLVM_HOME = 'C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\Llvm\\x64'
                         LIBCLANG_PATH = "${LLVM_HOME}\\bin"
                         CMAKE_PATH = 'C:\\Program Files\\CMake\\bin'
-                        MSBUILD_PATH = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\MSBuild\\Current\\Bin'
                         CARGO_HOME = "C:\\.cargo"
                         CARGO_PATH = "${CARGO_HOME}\\bin"
-                        PATH = "${CARGO_PATH};${LIBCLANG_PATH};${MSBUILD_PATH};${CMAKE_PATH};$PATH"
+                        PATH = "${CARGO_PATH};${LIBCLANG_PATH};${CMAKE_PATH};$PATH"
                     }
 
                     steps {
@@ -159,13 +158,12 @@ pipeline {
 
                     environment {
                         TARGET = "${WINDOWS_ARM64_TARGET}"
-                        LLVM_HOME = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Tools\\Llvm\\x64'
+                        LLVM_HOME = 'C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\Llvm\\x64'
                         LIBCLANG_PATH = "${LLVM_HOME}\\bin"
                         CMAKE_PATH = 'C:\\Program Files\\CMake\\bin'
-                        MSBUILD_PATH = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\MSBuild\\Current\\Bin'
                         CARGO_HOME = "C:\\.cargo"
                         CARGO_PATH = "${CARGO_HOME}\\bin"
-                        PATH = "${CARGO_PATH};${LIBCLANG_PATH};${MSBUILD_PATH};${CMAKE_PATH};$PATH"
+                        PATH = "${CARGO_PATH};${LIBCLANG_PATH};${CMAKE_PATH};$PATH"
                     }
 
                     steps {

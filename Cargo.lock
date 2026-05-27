@@ -651,7 +651,7 @@ checksum = "9f1f227452a390804cdb637b74a86990f2a7d7ba4b7d5693aac9b4dd6defd8d6"
 [[package]]
 name = "feenk-download-auth-client"
 version = "0.1.0"
-source = "git+https://github.com/feenkcom/feenk-download-auth-client#5fecba7319643d6d8d6f98830be78204627e1034"
+source = "git+https://github.com/feenkcom/feenk-download-auth-client#393186ca88c0e9d3a828eb703e1f950f9b0c765c"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
