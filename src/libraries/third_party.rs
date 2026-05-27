@@ -137,7 +137,7 @@ impl ThirdPartyLibrary {
             ThirdPartyLibrary::Editor => RustLibrary::new(
                 "Editor",
                 LibraryLocation::Git(
-                    GitLocation::github("feenkcom", "gtoolkit-editor-rs")
+                    GitLocation::github("feenkcom", "gtoolkit-editor-rs-release")
                         .tag_or_latest(versions.get_version_of(ThirdPartyLibrary::Editor)),
                 ),
             )

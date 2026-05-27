@@ -49,6 +49,8 @@ enum Command {
     Bundle(BuilderOptions),
     /// Compile and bundle in one go
     Build(BuilderOptions),
+    /// Compile or download third party only 
+    BuildThirdParty(BuilderOptions),
 }
 
 fn main() -> Result<()> {
@@ -58,6 +60,7 @@ fn main() -> Result<()> {
         Command::Compile(build_options) => compile(build_options)?,
         Command::Bundle(build_options) => bundle(build_options)?,
         Command::Build(build_options) => build(build_options)?,
+        Command::BuildThirdParty(build_options) => build_third_party(build_options)?,
     }
 
     Ok(())
@@ -68,6 +71,13 @@ fn build(build_options: BuilderOptions) -> Result<()> {
     compile_components(&*bundler, &bundle_options)?;
     bundler.bundle(&bundle_options);
 
+    Ok(())
+}
+
+fn build_third_party(build_options: BuilderOptions) -> Result<()> {
+    let (bundler, bundle_options) = prepare(build_options);
+    bundler.ensure_compiled_libraries_directory(&bundle_options)?;
+    bundler.compile_third_party_libraries(&bundle_options)?;
     Ok(())
 }
 
