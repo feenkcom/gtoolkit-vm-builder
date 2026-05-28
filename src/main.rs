@@ -45,12 +45,12 @@ struct Cli {
 enum Command {
     /// Compile executables and third-party libraries
     Compile(BuilderOptions),
+    /// Compile or download third party only 
+    CompileThirdParty(BuilderOptions),
     /// Bundle previously compiled artifacts
     Bundle(BuilderOptions),
     /// Compile and bundle in one go
     Build(BuilderOptions),
-    /// Compile or download third party only 
-    BuildThirdParty(BuilderOptions),
 }
 
 fn main() -> Result<()> {
@@ -60,7 +60,7 @@ fn main() -> Result<()> {
         Command::Compile(build_options) => compile(build_options)?,
         Command::Bundle(build_options) => bundle(build_options)?,
         Command::Build(build_options) => build(build_options)?,
-        Command::BuildThirdParty(build_options) => build_third_party(build_options)?,
+        Command::CompileThirdParty(build_options) => build_third_party(build_options)?,
     }
 
     Ok(())
