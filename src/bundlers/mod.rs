@@ -1,7 +1,6 @@
+use shared_library_builder::{Library, LibraryCompilationContext, LibraryTarget};
 use std::fmt::Debug;
 use std::path::{Path, PathBuf};
-
-use shared_library_builder::{Library, LibraryCompilationContext, LibraryTarget};
 
 use crate::options::BundleOptions;
 use crate::{Error, Platform, Result};
@@ -128,25 +127,7 @@ pub trait Bundler: Debug + Send + Sync {
 
     fn compile_library(&self, library: &Box<dyn Library>, options: &BundleOptions) -> Result<()> {
         let context = self.new_library_compilation_context(library, options);
-        let compiled_library = library.compile(&context)?;
-        let library_target =
-            LibraryTarget::try_from(options.target().to_string().as_str()).unwrap();
-
-        let library_path = self.compiled_libraries_directory(options).join(
-            library
-                .compiled_library_name()
-                .file_name(library.name(), &library_target, false),
-        );
-
-        std::fs::copy(&compiled_library, &library_path).map_err(|error| {
-            Error::new(format!(
-                "Could not copy {} to {}",
-                &compiled_library.display(),
-                &library_path.display(),
-            ))
-            .from(error)
-        })?;
-
+        let _ = library.compile(&context)?;
         Ok(())
     }
 
@@ -167,7 +148,24 @@ pub trait Bundler: Debug + Send + Sync {
     }
 
     fn compiled_libraries(&self, options: &BundleOptions) -> Vec<PathBuf> {
+        let mut all_compiled_libraries = self.compiled_vm_libraries(options);
+        all_compiled_libraries.extend(self.compiled_third_party_libraries(options));
+        all_compiled_libraries
+    }
+
+    fn compiled_vm_libraries(&self, options: &BundleOptions) -> Vec<PathBuf> {
         self.compiled_libraries_in(&self.compiled_libraries_directory(options), options)
+    }
+
+    fn compiled_third_party_libraries(&self, options: &BundleOptions) -> Vec<PathBuf> {
+        options
+            .libraries()
+            .iter()
+            .map(|library| {
+                let context = self.new_library_compilation_context(library, options);
+                library.compiled_library(&context)
+            })
+            .collect()
     }
 
     fn compiled_libraries_in(&self, directory: &Path, options: &BundleOptions) -> Vec<PathBuf> {

@@ -241,9 +241,7 @@ impl BuilderOptions {
 
         let output = command
             .output()
-            .map_err(|error| {
-                format!("{}: {:?} panicked due to {}", error_message, command, error);
-            })
+            .map_err(|error| format!("{}: {:?} panicked due to {}", error_message, command, error))
             .unwrap();
 
         let stdout = String::from_utf8_lossy(&output.stdout).to_string();
