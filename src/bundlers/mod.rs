@@ -149,7 +149,7 @@ pub trait Bundler: Debug + Send + Sync {
 
     fn compiled_libraries(&self, options: &BundleOptions) -> Vec<PathBuf> {
         let mut all_compiled_libraries = self.compiled_vm_libraries(options);
-        all_compiled_libraries.extend(self.compiled_third_party_libraries(options));
+        all_compiled_libraries.extend(self.exported_third_party_libraries(options));
         all_compiled_libraries
     }
 
@@ -157,13 +157,13 @@ pub trait Bundler: Debug + Send + Sync {
         self.compiled_libraries_in(&self.compiled_libraries_directory(options), options)
     }
 
-    fn compiled_third_party_libraries(&self, options: &BundleOptions) -> Vec<PathBuf> {
+    fn exported_third_party_libraries(&self, options: &BundleOptions) -> Vec<PathBuf> {
         options
             .libraries()
             .iter()
             .map(|library| {
                 let context = self.new_library_compilation_context(library, options);
-                library.compiled_library(&context)
+                library.exported_library_path(&context)
             })
             .collect()
     }
